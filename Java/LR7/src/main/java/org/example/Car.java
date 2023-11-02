@@ -8,7 +8,7 @@ import static org.example.Stage.*;
 
 public class Car implements Runnable {
     private static CyclicBarrier startBarrier;
-    private static CountDownLatch finalLatch;
+    private static CyclicBarrier finalBarrier;
     private static int CARS_COUNT;
     private static final AtomicInteger atom = new AtomicInteger(0);
     private static final Car[] winners = new Car[3];
@@ -29,11 +29,11 @@ public class Car implements Runnable {
         return speed;
     }
 
-    public Car(Race race, int speed, CyclicBarrier startBarrier, CountDownLatch finalLatch) {
+    public Car(Race race, int speed, CyclicBarrier startBarrier, CyclicBarrier finalBarrier) {
         this.race = race;
         this.speed = speed;
         Car.startBarrier = startBarrier;
-        Car.finalLatch = finalLatch;
+        Car.finalBarrier = finalBarrier;
         CARS_COUNT++;
         this.name = "Участник #" + CARS_COUNT;
     }
@@ -47,17 +47,14 @@ public class Car implements Runnable {
 
             startBarrier.await();
             for (int i = 0; i < race.getStages().size(); i++) {
-//                smp2.acquire();
                 race.getStages().get(i).go(this, i, race);
+                if (i == race.getStages().size() - 1) {
+                    getWin();
+                }
+                resultSmp.release();
             }
-            barrier = resultBarrier;
-            barrier.reset();
-//            System.out.println("барьер снова " + barrier.getParties());
-//            getWin();
-            smp2.release(20);
-//            locker.unlock();
-//            waitUnlock();
-            finalLatch.countDown();
+            finalBarrier.await();
+            finalBarrier.await();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,8 +64,8 @@ public class Car implements Runnable {
         int position = atom.incrementAndGet();
         if (position <= 3) {
             winners[position - 1] = this;
+        System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> " + name + " занял " + position + " место!");
         }
-            System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> " + name + " занял " + position + " место!");
     }
 
     public static void printWinners() {

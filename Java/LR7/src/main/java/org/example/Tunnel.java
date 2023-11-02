@@ -1,6 +1,5 @@
 package org.example;
 
-import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.Semaphore;
 
 public class Tunnel extends Stage {
@@ -12,44 +11,25 @@ public class Tunnel extends Stage {
     }
 
     @Override
-    public void go(Car c, int numStage, Race race) {
+    public void go(Car c, int numStage, Race race) throws InterruptedException {
         try {
-//            System.out.println("перед тоннелем ждут " + barrier.getNumberWaiting());
-//            System.out.println("тоннелю нужно " + barrier.getParties());
-//            waitUnlock();
-            waitUnlock();
-            barrier.await();
-//            smp2.acquire();
+//            resultSmp.acquire();
             System.out.println(c.getName() + " готовится к этапу(ждет): " + description);
-//            waitUnlock();
-//            smp2.release(2);
+//            resultSmp.release();
 
             smp.acquire();
-//            waitUnlock();
-            waitUnlock();
-            barrier.await();
-//            smp2.acquire();
+
+            resultSmp.acquire();
             System.out.println(c.getName() + " начал этап: " + description);
+            resultSmp.release();
             Thread.sleep(length / c.getSpeed() * 1000L);
-//            smp2.release(2);
-            if (numStage == race.getStages().size() - 1) {
-//                waitUnlock();
-//                smp2.acquire(smp2.availablePermits());
-//                locker.lock();
-                System.out.println(c.getName() + " закончил этап: " + description);
-                c.getWin();
-            } else {
-//                waitUnlock();
-                waitUnlock();
-                barrier.await();
-//                smp2.acquire();
-                System.out.println(c.getName() + " закончил этап: " + description);
-//                waitUnlock();
-//                smp2.release(2);
-            }
-            smp.release();
-        } catch (InterruptedException | BrokenBarrierException e) {
+
+            resultSmp.acquire();
+        } catch (InterruptedException e) {
             e.printStackTrace();
+        } finally {
+            System.out.println(c.getName() + " закончил этап: " + description);
+            smp.release();
         }
     }
 }
