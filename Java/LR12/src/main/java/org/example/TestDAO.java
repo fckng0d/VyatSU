@@ -74,10 +74,15 @@ public class TestDAO {
 
     @SneakyThrows
     private static void incrementValue(SessionFactory sessionFactory) {
+        long itemId = 0;
+        boolean success = true;
         for (int i = 0; i < countOfEntriesForEachThread; i++) {
+            // после отката не обновляем id, иначе это по сути будет совсем другая транзакция
+            if (success) {
+                itemId = (long) random.nextInt(countOfEntries) + 1;
+            }
             @Cleanup Session session = sessionFactory.getCurrentSession();
             Transaction transaction = session.beginTransaction();
-            long itemId = (long) random.nextInt(countOfEntries) + 1;
             try {
                 Item item = session.get(Item.class, itemId);
                 item.setVal(item.getVal() + 1);
@@ -85,14 +90,14 @@ public class TestDAO {
 
                 session.save(item);
 
+                success = true;
                 transaction.commit();
             } catch (PersistenceException e) {
                 System.out.println(Thread.currentThread().getName() + " rollback");
                 rollbacksCount++;
+                success = false;
                 i--;
                 transaction.rollback();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             } finally {
                 session.close();
             }
