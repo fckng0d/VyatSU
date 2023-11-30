@@ -200,20 +200,6 @@ public class UserDAO {
                 System.out.println(client);
             }
             System.out.println();
-
-
-//            StringBuilder sb = new StringBuilder();
-//            sb.append("\nСписок всех клиентов:")
-//                    .append(String.format("\n%-6s | %-15s | %-16s | %-14s | %-10s | %-10s", "ClientID", "LastName", "FirstName", "Patronymic", "BirthDate", "Passport"))
-//                    .append("\n")
-//                    .append(String.format("%s+%s+%s+%s+%s+%s", "---------", "-----------------", "------------------", "----------------", "------------", "-------------"))
-//                    .append("\n");
-//            for (Client client : clients) {
-//                if (client != null) {
-//                    sb.append(String.format("%-8s | %-15s | %-16s | %-14s | %-8s | %-10s\n", client.getClientId(), client.getLastName(), client.getFirstName(), client.getPatronymic(), client.getBirthDate(), client.getPassport()));
-//                }
-//            }
-//            System.out.println(sb);
         } else {
             System.out.println("\nКлиентов нет\n\n");
         }
@@ -232,18 +218,6 @@ public class UserDAO {
             }
             System.out.println();
 
-//            StringBuilder sb = new StringBuilder();
-//            sb.append("\nСписок всех банковских счетов:")
-//                    .append(String.format("\n%-10s | %-10s | %-10s | %-10s", "BankAccountID", "Balance", "OpeningDate", "ClosingDate"))
-//                    .append("\n")
-//                    .append(String.format("%s+%s+%s+%s", "--------------", "------------", "-------------", "-------------"))
-//                    .append("\n");
-//            for (BankAccount bankAccount : bankAccounts) {
-//                if (bankAccount != null) {
-//                    sb.append(String.format("%-13s | %-10s | %-11s | %-10s \n", bankAccount.getBankAccountId(), bankAccount.getBalance(), bankAccount.getOpeningDate(), bankAccount.getClosingDate()));
-//                }
-//            }
-//            System.out.println(sb);
         } else {
             System.out.println("\nБанковских счетов нет\n\n");
         }
@@ -261,19 +235,6 @@ public class UserDAO {
                 System.out.println(loan);
             }
             System.out.println();
-
-//            StringBuilder sb = new StringBuilder();
-//            sb.append("\nСписок всех кредитов:")
-//                    .append(String.format("\n%-10s | %-6s | %-10s | %-10s | %-8s | %-10s | %-10s", "BankAccountID", "LoanID", "LoanAmount", "InterestRate", "LoanTerm", "DateOfGive", "DateOfTotalRepayment"))
-//                    .append("\n")
-//                    .append(String.format("%s+%s+%s+%s+%s+%s+%s", "--------------", "--------", "------------", "--------------", "----------", "------------", "---------------------"))
-//                    .append("\n");
-//            for (Loan loan : loans) {
-//                if (loan != null) {
-//                    sb.append(String.format("%-13s | %-6s | %-10s | %-12s | %-8s | %-10s | %-10s \n", loan.getBankAccount().getBankAccountId(), loan.getLoanId(), loan.getLoanAmount(), loan.getInterestRate(), loan.getLoanTerm(), loan.getDateOfGive(), loan.getDateOfTotalRepayment()));
-//                }
-//            }
-//            System.out.println(sb);
         } else {
             System.out.println("\nКредитов нет\n\n");
         }

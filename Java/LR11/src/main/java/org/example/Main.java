@@ -51,35 +51,13 @@ public class Main {
         userDAO.update(clients[0], clients[1], loans[0]);
 
 
-//        userDAO.delete(clients[1]);
-        /** Нельзя удалить сущность, которая уже была удалена*/
-//        userDAO.delete(clients[1]);
-
-
-        /** Нельзя добавлять/обновлять/удалять несуществующие сущности */
-//        Object object = new Object();
-//        userDAO.insert(object);
-//        userDAO.update(object);
-//        userDAO.delete(object);
-
-
-//        userDAO.getBankAccountsByClientId(1);
-//        System.out.println("\n====================================================\n");
 
         userDAO.getBankAccountsByClientName("Егор");
-//        System.out.println("\n====================================================\n");
-//
-//        userDAO.getLoansByClientId(1);
-//        System.out.println("\n====================================================\n");
-
         userDAO.getLoansByClientName("Егор");
-//        System.out.println("\n====================================================\n");
-
 
         userDAO.getAllClients();
         userDAO.getAllBankAccounts();
         userDAO.getAllLoans();
-
 
         userDAO.closeSessionFactory();
     }
