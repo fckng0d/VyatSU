@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Client</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <style>
+        .form-horizontal {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-control {
+            font-size: 14px;
+            padding: 5px;
+        }
+
+        .form-group.justify-content-center {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand">Кредитка</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/clients">Клиенты</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<form th:if="${client.clientId == null}" th:method="POST" th:action="@{/clients}" th:object="${client}"
+      class="form-horizontal">
+    <h3 style="margin-left: 123px; margin-top: 20px; margin-bottom: 25px">Добавить клиента</h3>
+
+    <div style="margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{lastName}" placeholder="Фамилия" class="form-control"/>
+        <div style="color:red; min-width: 100%;" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Name
+            error
+        </div>
+    </div>
+
+    <div style="margin-top: 25px; margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{firstName}" placeholder="Имя" class="form-control"/>
+        <div style="color:red; min-width: 100%;" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">Name
+            error
+        </div>
+    </div>
+
+    <div style="margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{patronymic}" placeholder="Отчество (при наличии)" class="form-control"/>
+        <div style="color:red; min-width: 100%;" th:if="${#fields.hasErrors('patronymic')}" th:errors="*{patronymic}">
+            Name error
+        </div>
+    </div>
+
+    <div style="margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{birthDate}" placeholder="Дата рождения" class="form-control"/>
+        <div style="color:red; min-width: 100%;" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}">Name
+            error
+        </div>
+    </div>
+
+    <div style="margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{passport}" placeholder="Паспорт" class="form-control"/>
+        <div style="color:red; min-width: 100%;" th:if="${#fields.hasErrors('passport')}" th:errors="*{passport}">Name
+            error
+        </div>
+    </div>
+
+    <div style="margin-top: 10px" class="form-group justify-content-center">
+        <div class="col-sm-12 controls">
+            <button style='margin-left: 183px' type="submit" class="btn btn-primary">Добавить</button>
+        </div>
+    </div>
+</form>
+
+<form th:if="${client.getClientId() != null}" th:method="PATCH" th:action="@{/clients/{id}(id=${client.getClientId()})}"
+      th:object="${client}" class="form-horizontal">
+    <h3 style="margin-left: 70px; margin-top: 20px; margin-bottom: 25px">Изменить данные клиента</h3>
+
+    <div style="margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{lastName}" placeholder="Фамилия" class="form-control"/>
+        <div style="color:red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Name error</div>
+    </div>
+
+    <div style="margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{firstName}" placeholder="Имя" class="form-control"/>
+        <div style="color:red" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">Name error</div>
+    </div>
+
+    <div style="margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{patronymic}" placeholder="Отчество (при наличии)" class="form-control"/>
+        <div style="color:red" th:if="${#fields.hasErrors('patronymic')}" th:errors="*{patronymic}">Name error</div>
+    </div>
+
+    <div style="margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{birthDate}" placeholder="Дата рождения" class="form-control"/>
+        <div style="color:red" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}">Name error</div>
+    </div>
+
+    <div style="margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{passport}" placeholder="Паспорт" class="form-control"/>
+        <div style="color:red" th:if="${#fields.hasErrors('passport')}" th:errors="*{passport}">Name error</div>
+    </div>
+
+    <div style="margin-top: 10px" class="form-group">
+        <div class="col-sm-6 controls">
+            <button style="margin-left: 185px" type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
+    </div>
+</form>
+
+</body>
+</html>
