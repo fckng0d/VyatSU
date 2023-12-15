@@ -229,21 +229,24 @@
 
         if (date === '' || date === null) {
             errorField.textContent = "Поле пустое";
-        }
-
-        var dateRegex = /^\d{4}-\d{2}-\d{2}$/; // Формат даты yyyy-MM-dd
-        if (!dateRegex.test(date)) {
-            errorField.textContent = "Формат даты должен быть yyyy-MM-dd";
             return false;
-        }
-
-        var dateParts = date.split("-");
-        var year = parseInt(dateParts[0]);
-        var month = parseInt(dateParts[1]);
-        var day = parseInt(dateParts[2]);
-        if (year < 1900 || year > 2023 || month === 0 || month > 12 || day === 0 || day > 31) {
-            errorField.textContent = "Неверная дата";
-            return false;
+        } else {
+            var dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+            if (!dateRegex.test(date)) {
+                errorField.textContent = "Формат даты должен быть yyyy-MM-dd";
+                return false;
+            } else {
+                var dateParts = date.split("-");
+                var year = parseInt(dateParts[0]);
+                var month = parseInt(dateParts[1]);
+                var day = parseInt(dateParts[2]);
+                if (year < 1900 || year > 2023 || month === 0 || month > 12 || day === 0 || day > 31) {
+                    errorField.textContent = "Неверная дата";
+                    return false;
+                } else {
+                    errorField.textContent = "";
+                }
+            }
             return true;
         }
     }
@@ -332,6 +335,7 @@
 
         if (date === '' || date === null) {
             errorField.textContent = "Поле пустое";
+            return false;
         } else {
             var dateRegex = /^\d{4}-\d{2}-\d{2}$/;
             if (!dateRegex.test(date)) {
@@ -340,49 +344,51 @@
             } else {
                 var dateParts = date.split("-");
                 var year = parseInt(dateParts[0]);
-                if (year < 1900 || year > 2023) {
-                    errorField.textContent = "Такой даты не существует";
+                var month = parseInt(dateParts[1]);
+                var day = parseInt(dateParts[2]);
+                if (year < 1900 || year > 2023 || month === 0 || month > 12 || day === 0 || day > 31) {
+                    errorField.textContent = "Неверная дата";
                     return false;
                 } else {
-                    var dateParts = date.split("-");
-                    var year = parseInt(dateParts[0]);
-                    var month = parseInt(dateParts[1]);
-                    var day = parseInt(dateParts[2]);
-                    if (year < 1900 || year > 2023 || month === 0 || month > 12 || day === 0 || day > 31) {
-                        errorField.textContent = "Неверная дата";
-                        return false;
-                    }
+                    errorField.textContent = "";
                 }
             }
             return true;
         }
     }
 
-    function validateDateOfTotalRepayment() {
-        var date = document.getElementById("dateOfTotalRepaymentInput").value;
-        var errorField = document.getElementById("dateOfTotalRepaymentError");
+    const oldDate = document.getElementById("dateOfTotalRepaymentInput").value;
+    const wasEmpty = (oldDate === '' || oldDate === null);
 
-        if (date === '' || date === null) {
+    function validateDateOfTotalRepayment() {
+        let date = document.getElementById("dateOfTotalRepaymentInput").value;
+        let oldDate = document.getElementById("dateOfGiveInput1").value;
+        let errorField = document.getElementById("dateOfTotalRepaymentError");
+
+        if ((date === '' || date === null) && !wasEmpty) {
             errorField.textContent = "Поле пустое";
+            return false;
         } else {
-            var dateRegex = /^\d{4}-\d{2}-\d{2}$/; // Формат даты yyyy-MM-dd
+            var dateRegex = /^\d{4}-\d{2}-\d{2}$/;
             if (!dateRegex.test(date)) {
                 errorField.textContent = "Формат даты должен быть yyyy-MM-dd";
                 return false;
             } else {
                 var dateParts = date.split("-");
                 var year = parseInt(dateParts[0]);
-                if (year < 1900 || year > 2023) {
-                    errorField.textContent = "Такой даты не существует";
+                var month = parseInt(dateParts[1]);
+                var day = parseInt(dateParts[2]);
+                if (year < 1900 || year > 2023 || month === 0 || month > 12 || day === 0 || day > 31) {
+                    errorField.textContent = "Неверная дата";
                     return false;
                 } else {
-                    var dateParts = date.split("-");
-                    var year = parseInt(dateParts[0]);
-                    var month = parseInt(dateParts[1]);
-                    var day = parseInt(dateParts[2]);
-                    if (year < 1900 || year > 2023 || month === 0 || month > 12 || day === 0 || day > 31) {
-                        errorField.textContent = "Неверная дата";
+                    const firstDate = new Date(oldDate);
+                    const secondDate = new Date(date);
+                    if (firstDate < secondDate) {
+                        errorField.textContent = "Дата погашения не может быть раньше даты выдачи";
                         return false;
+                    } else {
+                        errorField.textContent = "";
                     }
                 }
             }

@@ -29,7 +29,7 @@ public class Loan {
     private String dateOfGive;
 
     @Column(name = "date_of_total_repayment")
-    private LocalDate dateOfTotalRepayment;
+    private String dateOfTotalRepayment;
 
     @ManyToOne
     @JoinColumn(name = "client_id")

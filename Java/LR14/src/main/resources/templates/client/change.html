@@ -230,7 +230,7 @@
         if (birthDateInput === '' || birthDateInput === null) {
             errorField.textContent = "Поле пустое";
         } else {
-            var dateRegex = /^\d{4}-\d{2}-\d{2}$/; // Формат даты yyyy-MM-dd
+            var dateRegex = /^\d{4}-\d{2}-\d{2}$/;
             if(!dateRegex.test(birthDateInput)) {
                 errorField.textContent = "Формат даты должен быть yyyy-MM-dd";
                 return false;
@@ -257,45 +257,6 @@
         }
     }
 
-    // Валидация даты рождения
-    function validateBirthDate() {
-        var birthDateInput = document.getElementById("birthDateInput").value;
-        var errorField = document.getElementById("birthDateError");
-
-        if (birthDateInput === '' || birthDateInput === null) {
-            errorField.textContent = "Поле пустое";
-            return false;
-        }
-
-        var dateRegex = /^\d{4}-\d{2}-\d{2}$/; // Формат даты yyyy-MM-dd
-        if(!dateRegex.test(birthDateInput)) {
-            errorField.textContent = "Формат даты должен быть yyyy-MM-dd";
-            return false;
-        }
-
-        var dateParts = birthDateInput.split("-");
-        var year = parseInt(dateParts[0]);
-        var month = parseInt(dateParts[1]);
-        var day = parseInt(dateParts[1]);
-        if (year < 1900 || year > 2023 || month === 0 || month > 12 || day === 0 || day > 31) {
-            errorField.textContent = "Такой даты не существует";
-            return false;
-        }
-
-        // Проверка возраста
-        var birthDate = new Date(birthDateInput);
-        var ageDiff = Date.now() - birthDate.getTime();
-        var ageDate = new Date(ageDiff); // Текущая дата минус дата рождения
-        var calculatedAge = Math.abs(ageDate.getUTCFullYear() - 1970);
-        if (calculatedAge < 18 || calculatedAge > 100) {
-            errorField.textContent = "Возраст должен быть не меньше 18 и не больше 100 лет";
-            return false;
-        }
-
-        errorField.textContent = "";
-        return true;
-    }
-
     // Валидация паспорта
     function validatePassport() {
         var passportInput = document.getElementById("passportInput").value;
@@ -315,6 +276,8 @@
         errorField.textContent = "";
         return true;
     }
+
+
 
     function validateForm1() {
         if (validateLastName1() & validateFirstName1() & validatePatronymic1()
@@ -431,45 +394,6 @@
             }
             return true;
         }
-    }
-
-    // Валидация даты рождения
-    function validateBirthDate1() {
-        var birthDateInput = document.getElementById("birthDateInput1").value;
-        var errorField = document.getElementById("birthDateError1");
-
-        if (birthDateInput === '' || birthDateInput === null) {
-            errorField.textContent = "Поле пустое";
-            return false;
-        }
-
-        var dateRegex = /^\d{4}-\d{2}-\d{2}$/; // Формат даты yyyy-MM-dd
-        if(!dateRegex.test(birthDateInput)) {
-            errorField.textContent = "Формат даты должен быть yyyy-MM-dd";
-            return false;
-        }
-
-        var dateParts = birthDateInput.split("-");
-        var year = parseInt(dateParts[0]);
-        var month = parseInt(dateParts[1]);
-        var day = parseInt(dateParts[2  ]);
-        if (year < 1900 || year > 2023 || month === 0 || month > 12 || day === 0 || day > 31) {
-            errorField.textContent = "Неверная дата";
-            return false;
-        }
-
-        // Проверка возраста
-        var birthDate = new Date(birthDateInput);
-        var ageDiff = Date.now() - birthDate.getTime();
-        var ageDate = new Date(ageDiff); // Текущая дата минус дата рождения
-        var calculatedAge = Math.abs(ageDate.getUTCFullYear() - 1970);
-        if (calculatedAge < 18 || calculatedAge > 100) {
-            errorField.textContent = "Возраст должен быть не меньше 18 и не больше 100 лет";
-            return false;
-        }
-
-        errorField.textContent = "";
-        return true;
     }
 
     // Валидация паспорта

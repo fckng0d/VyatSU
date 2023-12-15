@@ -67,7 +67,6 @@ public class ClientController {
         if (bindingResult.hasErrors()) {
             return "client/change";
         }
-        System.out.println("ХУУУУУУУУУУУУЙ");
         clientService.add(client);
         return "redirect:/clients";
     }
