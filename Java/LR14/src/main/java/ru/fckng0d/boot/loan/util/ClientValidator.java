@@ -31,10 +31,10 @@ public class ClientValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        validateLastName((Client) target, errors);
-        validateFirstName((Client) target, errors);
-        validatePatronymic((Client) target, errors);
-        validateBirthDate((Client) target, errors);
+//        validateLastName((Client) target, errors);
+//        validateFirstName((Client) target, errors);
+//        validatePatronymic((Client) target, errors);
+//        validateBirthDate((Client) target, errors);
         validatePassport((Client) target, errors, ClientController.getTempId(), ClientController.getMode());
     }
 
@@ -110,20 +110,6 @@ public class ClientValidator implements Validator {
     private void validatePassport(Client client, Errors errors, Long id, int mode) {
         if (clientService.isThereSuchPassport(client, id, mode) != null) {
             errors.rejectValue("passport", "", "Такой паспорт уже используется");
-            return;
-        } else if (client.getPassport().isBlank()) {
-            errors.rejectValue("passport", "", "Поле не заполнено");
-            return;
-        }
-
-        String regex = "^[1-9]+$";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(client.getPassport());
-
-        if (!matcher.matches()) {
-            errors.rejectValue("passport", "", "Паспорт должен состоять только из цифр");
-        } else if (client.getPassport().length() != 10) {
-            errors.rejectValue("passport", "", "Паспорт должен состоять из 10 цифр");
         }
     }
 }

@@ -19,14 +19,14 @@ public class Loan {
     @Column(name = "loan_amount")
     private Double loanAmount;
 
-    @Column(name = "interestRate")
+    @Column(name = "interest_rate")
     private Double interestRate;
 
     @Column(name = "loan_term")
     private Integer loanTerm;
 
     @Column(name = "date_of_give")
-    private LocalDate dateOfGive;
+    private String dateOfGive;
 
     @Column(name = "date_of_total_repayment")
     private LocalDate dateOfTotalRepayment;
@@ -36,7 +36,7 @@ public class Loan {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Client client;
 
-    public Loan(Double loanAmount, Double interestRate, Integer loanTerm, LocalDate dateOfGive, Client client) {
+    public Loan(Double loanAmount, Double interestRate, Integer loanTerm, String dateOfGive, Client client) {
         this.loanAmount = loanAmount;
         this.interestRate = interestRate;
         this.loanTerm = loanTerm;
@@ -44,16 +44,16 @@ public class Loan {
         this.client = client;
     }
 
-    @Override
-    public String toString() {
-        return "Loan{" +
-                "loanId=" + loanId +
-                ", loanAmount=" + loanAmount +
-                ", interestRate=" + interestRate +
-                ", loanTerm=" + loanTerm +
-                ", dateOfGive=" + dateOfGive +
-                ", dateOfTotalRepayment=" + dateOfTotalRepayment +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Loan{" +
+//                "loanId=" + loanId +
+//                ", loanAmount=" + loanAmount +
+//                ", interestRate=" + interestRate +
+//                ", loanTerm=" + loanTerm +
+//                ", dateOfGive=" + dateOfGive +
+//                ", dateOfTotalRepayment=" + dateOfTotalRepayment +
+//                '}';
+//    }
 }
 

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Loan</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <style>
+        .form-horizontal {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-control {
+            font-size: 14px;
+            padding: 5px;
+        }
+
+        .form-group.justify-content-center {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand">Кредитка</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/clients">Клиенты</a>
+            </li>
+            <li class="nav-item">
+                <a th:if="${loan.loanId != null}" class="nav-link"
+                   th:href="@{'/clients/' + ${clientId} + '/loans/' + ${loan.getLoanId()}}">Назад</a>
+                <a th:if="${loan.loanId == null}" class="nav-link" th:href="@{'/clients/' + ${clientId} + '/loans'}">Назад</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<form th:if="${loan.loanId == null}" th:method="POST"
+      th:action="@{/clients/__${clientId}__/loans}" th:object="${loan}" class="form-horizontal">
+    <h3 style="margin-left: 123px; margin-top: 20px; margin-bottom: 25px">Добавить кредит</h3>
+
+    <div style="margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{loanAmount}" id="loanAmountInput" placeholder="Сумма кредита"
+               class="form-control" onkeyup="validateLoanAmount()"/>
+        <div style="color:red; min-width: 100%;" id="loanAmountError"></div>
+    </div>
+
+    <div style="margin-top: 25px; margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{interestRate}" id="interestRateInput" placeholder="Процент"
+               class="form-control" onkeyup="validateInterestRate()"/>
+        <div style="color:red; min-width: 100%;" id="interestRateError"></div>
+    </div>
+
+    <div style="margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{loanTerm}" id="loanTermInput" placeholder="Срок кредитования"
+               class="form-control" onkeyup="validateLoanTerm()"/>
+        <div style="color:red; min-width: 100%;" id="loanTermError"></div>
+    </div>
+    </div>
+
+    <div style="margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{dateOfGive}" id="dateOfGiveInput" placeholder="Дата выдачи"
+               class="form-control" onkeyup="validateDateOfGive()"/>
+        <div style="color:red; min-width: 100%;" id="dateOfGiveError"></div>
+    </div>
+
+    <!--  <div style="margin-bottom: 25px" class="input-group">-->
+    <!--    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>-->
+    <!--    <input th:field="*{dateOfTotalRepayment}" id="dateOfTotalRepaymentInput" placeholder="Дата полного погашения" class="form-control"/>-->
+    <!--    <div style="color:red; min-width: 100%;" id="dateOfTotalRepaymentError"></div>
+    </div>-->
+
+    <div style="margin-top: 10px" class="form-group justify-content-center">
+        <div class="col-sm-12 controls">
+            <button style='margin-left: 183px' type="submit" class="btn btn-primary"
+                    onclick="return validateForm()">Добавить
+            </button>
+        </div>
+    </div>
+</form>
+
+
+<form th:if="${loan.loanId != null}" th:method="PATCH"
+      th:action="@{'/clients/' + ${clientId} + '/loans/' + ${loan.getLoanId()}}"
+      th:object="${loan}" class="form-horizontal">
+    <h3 style="margin-left: 70px; margin-top: 20px; margin-bottom: 25px">Изменить данные кредита</h3>
+
+    <div style="margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{loanAmount}" id="loanAmountInput1" placeholder="Сумма кредита"
+               class="form-control" onkeyup="validateLoanAmount1()"/>
+        <div style="color:red; min-width: 100%;" id="loanAmountError1"></div>
+    </div>
+
+    <div style="margin-top: 25px; margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{interestRate}" id="interestRateInput1" placeholder="Процент"
+               class="form-control" onkeyup="validateInterestRate1()"/>
+        <div style="color:red; min-width: 100%;" id="interestRateError1"></div>
+    </div>
+
+    <div style="margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{loanTerm}" id="loanTermInput1" placeholder="Срок кредитования"
+               class="form-control" onkeyup="validateLoanTerm1()"/>
+        <div style="color:red; min-width: 100%;" id="loanTermError1"></div>
+    </div>
+    </div>
+
+    <div style="margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{dateOfGive}" id="dateOfGiveInput1" placeholder="Дата выдачи"
+               class="form-control" onkeyup="validateDateOfGive1()"/>
+        <div style="color:red; min-width: 100%;" id="dateOfGiveError1"></div>
+    </div>
+
+    <div style="margin-bottom: 25px" class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input th:field="*{dateOfTotalRepayment}" id="dateOfTotalRepaymentInput" placeholder="Дата полного погашения"
+               class="form-control" onkeyup="validateDateOfTotalRepayment()"/>
+        <div style="color:red; min-width: 100%;" id="dateOfTotalRepaymentError"></div>
+    </div>
+    </div>
+
+    <div style="margin-top: 10px" class="form-group">
+        <div class="col-sm-6 controls">
+            <button style="margin-left: 185px" type="submit" class="btn btn-primary"
+                    onclick="return validateForm1()">Сохранить
+            </button>
+        </div>
+    </div>
+</form>
+
+<script>
+    function validateForm() {
+        if (validateLoanAmount() & validateInterestRate() & validateLoanTerm()
+            & validateDateOfGive()) {
+            return true;
+        }
+        return false;
+    }
+
+    function validateLoanAmount() {
+        var amount = document.getElementById("loanAmountInput").value;
+        var errorField = document.getElementById("loanAmountError");
+
+        if (amount === '' || amount === null) {
+            errorField.textContent = "Поле пустое";
+            return false;
+        }
+
+        if (isNaN(amount)) {
+            errorField.textContent = "Сумма должна быть числом";
+            return false;
+        }
+
+        if (amount < 1000.00 || amount > 10000000.00) {
+            errorField.textContent = "Сумма должна быть в пределах от 1000 до 1000000";
+            return false;
+        }
+
+        errorField.textContent = "";
+        return true;
+    }
+
+    function validateInterestRate() {
+        var interestRate = document.getElementById("interestRateInput").value;
+        var errorField = document.getElementById("interestRateError");
+
+        if (interestRate === '' || interestRate === null) {
+            errorField.textContent = "Поле пустое";
+            return false;
+        }
+
+        if (isNaN(interestRate)) {
+            errorField.textContent = "Процент должна быть числом";
+            return false;
+        }
+
+        if (interestRate < 4 || interestRate > 70) {
+            errorField.textContent = "Процент должен быть в пределах от 4 до 70";
+            return false;
+        }
+
+        errorField.textContent = "";
+        return true;
+    }
+
+    function validateLoanTerm() {
+        var term = document.getElementById("loanTermInput").value;
+        var errorField = document.getElementById("loanTermError");
+
+        if (term === '' || term === null) {
+            errorField.textContent = "Поле пустое";
+            return false;
+        }
+
+        if (isNaN(term) || term % 1 !== 0) {
+            errorField.textContent = "Срок должен быть целым числом";
+            return false;
+        }
+
+        if (term < 2 || term > 120) {
+            errorField.textContent = "Срок должен быть в пределах от 2 до 120 месяцев";
+            return false;
+        }
+
+        errorField.textContent = "";
+        return true;
+    }
+
+    function validateDateOfGive() {
+        var date = document.getElementById("dateOfGiveInput").value;
+        var errorField = document.getElementById("dateOfGiveError");
+
+        if (date === '' || date === null) {
+            errorField.textContent = "Поле пустое";
+        }
+
+        var dateRegex = /^\d{4}-\d{2}-\d{2}$/; // Формат даты yyyy-MM-dd
+        if (!dateRegex.test(date)) {
+            errorField.textContent = "Формат даты должен быть yyyy-MM-dd";
+            return false;
+        }
+
+        var dateParts = date.split("-");
+        var year = parseInt(dateParts[0]);
+        var month = parseInt(dateParts[1]);
+        var day = parseInt(dateParts[2]);
+        if (year < 1900 || year > 2023 || month === 0 || month > 12 || day === 0 || day > 31) {
+            errorField.textContent = "Неверная дата";
+            return false;
+            return true;
+        }
+    }
+
+
+    function validateForm1() {
+        if (validateLoanAmount() & validateInterestRate() & validateLoanTerm()
+            & validateDateOfGive() & validateDateOfTotalRepayment()) {
+            return true;
+        }
+        return false;
+    }
+
+    function validateLoanAmount1() {
+        var amount = document.getElementById("loanAmountInput1").value;
+        var errorField = document.getElementById("loanAmountError1");
+
+        if (amount === '' || amount === null) {
+            errorField.textContent = "Поле пустое";
+            return false;
+        }
+
+        if (isNaN(amount)) {
+            errorField.textContent = "Сумма должна быть числом";
+            return false;
+        }
+
+        if (amount < 1000.00 || amount > 10000000.00) {
+            errorField.textContent = "Сумма должна быть в пределах от 1000 до 1000000";
+            return false;
+        }
+
+        errorField.textContent = "";
+        return true;
+    }
+
+    function validateInterestRate1() {
+        var interestRate = document.getElementById("interestRateInput1").value;
+        var errorField = document.getElementById("interestRateError1");
+
+        if (interestRate === '' || interestRate === null) {
+            errorField.textContent = "Поле пустое";
+            return false;
+        }
+
+        if (isNaN(interestRate)) {
+            errorField.textContent = "Процент должна быть числом";
+            return false;
+        }
+
+        if (interestRate < 4 || interestRate > 70) {
+            errorField.textContent = "Процент должен быть в пределах от 4 до 70";
+            return false;
+        }
+
+        errorField.textContent = "";
+        return true;
+    }
+
+    function validateLoanTerm1() {
+        var term = document.getElementById("loanTermInput1").value;
+        var errorField = document.getElementById("loanTermError1");
+
+        if (term === '' || term === null) {
+            errorField.textContent = "Поле пустое";
+            return false;
+        }
+
+        if (isNaN(term) || term % 1 !== 0) {
+            errorField.textContent = "Срок должен быть целым числом";
+            return false;
+        }
+
+        if (term < 2 || term > 120) {
+            errorField.textContent = "Срок должен быть в пределах от 2 до 120 месяцев";
+            return false;
+        }
+
+        errorField.textContent = "";
+        return true;
+    }
+
+    function validateDateOfGive1() {
+        var date = document.getElementById("dateOfGiveInput1").value;
+        var errorField = document.getElementById("dateOfGiveError1");
+
+        if (date === '' || date === null) {
+            errorField.textContent = "Поле пустое";
+        } else {
+            var dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+            if (!dateRegex.test(date)) {
+                errorField.textContent = "Формат даты должен быть yyyy-MM-dd";
+                return false;
+            } else {
+                var dateParts = date.split("-");
+                var year = parseInt(dateParts[0]);
+                if (year < 1900 || year > 2023) {
+                    errorField.textContent = "Такой даты не существует";
+                    return false;
+                } else {
+                    var dateParts = date.split("-");
+                    var year = parseInt(dateParts[0]);
+                    var month = parseInt(dateParts[1]);
+                    var day = parseInt(dateParts[2]);
+                    if (year < 1900 || year > 2023 || month === 0 || month > 12 || day === 0 || day > 31) {
+                        errorField.textContent = "Неверная дата";
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+    }
+
+    function validateDateOfTotalRepayment() {
+        var date = document.getElementById("dateOfTotalRepaymentInput").value;
+        var errorField = document.getElementById("dateOfTotalRepaymentError");
+
+        if (date === '' || date === null) {
+            errorField.textContent = "Поле пустое";
+        } else {
+            var dateRegex = /^\d{4}-\d{2}-\d{2}$/; // Формат даты yyyy-MM-dd
+            if (!dateRegex.test(date)) {
+                errorField.textContent = "Формат даты должен быть yyyy-MM-dd";
+                return false;
+            } else {
+                var dateParts = date.split("-");
+                var year = parseInt(dateParts[0]);
+                if (year < 1900 || year > 2023) {
+                    errorField.textContent = "Такой даты не существует";
+                    return false;
+                } else {
+                    var dateParts = date.split("-");
+                    var year = parseInt(dateParts[0]);
+                    var month = parseInt(dateParts[1]);
+                    var day = parseInt(dateParts[2]);
+                    if (year < 1900 || year > 2023 || month === 0 || month > 12 || day === 0 || day > 31) {
+                        errorField.textContent = "Неверная дата";
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+    }
+
+</script>
+
+</body>
+</html>

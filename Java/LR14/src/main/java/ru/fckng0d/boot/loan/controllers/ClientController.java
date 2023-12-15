@@ -32,13 +32,13 @@ public class ClientController {
     @GetMapping
     public String index(Model model) {
         model.addAttribute("clients", clientService.getAllClients());
-        return "index";
+        return "client/index";
     }
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") Long id, Model model) {
         model.addAttribute("client", clientService.getClientById(id));
-        return "show";
+        return "client/show";
     }
 
     @GetMapping("/filter")
@@ -52,12 +52,12 @@ public class ClientController {
         model.addAttribute("lastName", lastName);
         model.addAttribute("birthDate", birthDate);
         model.addAttribute("passport", passport);
-        return "index";
+        return "client/index";
     }
 
     @GetMapping("/new")
     public String newClient(@ModelAttribute("client") Client client) {
-        return "change";
+        return "client/change";
     }
 
     @PostMapping
@@ -65,9 +65,9 @@ public class ClientController {
         mode = 0;
         clientValidator.validate(client, bindingResult);
         if (bindingResult.hasErrors()) {
-            return "change";
+            return "client/change";
         }
-
+        System.out.println("ХУУУУУУУУУУУУЙ");
         clientService.add(client);
         return "redirect:/clients";
     }
@@ -77,7 +77,7 @@ public class ClientController {
         model.addAttribute("client", clientService.getClientById(id));
         mode = 1;
         tempId = id;
-        return "change";
+        return "client/change";
     }
 
     @PatchMapping("/{id}")
@@ -87,7 +87,7 @@ public class ClientController {
         redirectAttributes.addAttribute("id", id);
 
         if (bindingResult.hasErrors()) {
-            return "change";
+            return "client/change";
         }
 
         clientService.update(id, client);

@@ -20,7 +20,7 @@ create table loan
         primary key,
     date_of_give            date,
     date_of_total_repayment date,
-    interestrate            double precision,
+    interest_rate            double precision,
     loan_amount             double precision,
     loan_term               integer,
     client_id         bigint
@@ -32,3 +32,9 @@ create table loan
 alter table loan
     owner to postgres;
 
+
+insert into client
+values (default, '2003-12-31', 'Даниил', 'Коковихин', 1212121212, 'Николаевич');
+
+insert into loan
+values (default, '2022-10-14', null, 5.6, 20000, 12, 1);

@@ -19,6 +19,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="/clients">Клиенты</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{'/clients/' + ${clientId} + '/loans'}">Назад</a>
+            </li>
         </ul>
     </div>
 </nav>
@@ -28,28 +31,28 @@
         <thead>
         <tr>
             <th>ID</th>
-            <th>Фамилия</th>
-            <th>Имя</th>
-            <th>Отчество</th>
-            <th>Дата рождения</th>
-            <th>Паспорт</th>
+            <th>Сумма</th>
+            <th>Процент</th>
+            <th>Срок</th>
+            <th>Дата выдачи</th>
+            <th>Дата погашения</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td th:text="${client.clientId}"/>
-            <td th:text="${client.getLastName()}"/>
-            <td th:text="${client.getFirstName()}"/>
-            <td th:text="${client.getPatronymic()}"/>
-            <td th:text="${client.getBirthDate()}"/>
-            <td th:text="${client.getPassport()}"/>
+            <td th:text="${loan.getLoanId()}"/>
+            <td th:text="${loan.getLoanAmount()}"/>
+            <td th:text="${loan.getInterestRate()}"/>
+            <td th:text="${loan.getLoanTerm()}"/>
+            <td th:text="${loan.getDateOfGive()}"/>
+            <td th:text="${loan.getDateOfTotalRepayment()}"/>
             <td>
 
-                <form th:method="GET" th:action="@{/clients/{id}/edit(id=${client.getClientId()})}">
+                <form th:method="GET" th:action="@{'/clients/' + ${clientId} + '/loans/' + ${loan.loanId} + '/edit'}">
                     <button type="submit" class="btn btn-primary btn-sm btn-block">Изменить</button>
                 </form>
 
-                <form th:method="DELETE" th:action="@{/clients/{id}(id=${client.getClientId()})}">
+                <form th:method="DELETE" th:action="@{'/clients/' + ${clientId} + '/loans/' + ${loan.loanId}}">
                     <button type="submit" class="btn btn-danger btn-sm btn-block">Удалить</button>
                 </form>
             </td>
