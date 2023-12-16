@@ -3,6 +3,7 @@ package ru.fckng0d.boot.loan.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.fckng0d.boot.loan.entities.Client;
+import ru.fckng0d.boot.loan.entities.User;
 import ru.fckng0d.boot.loan.repositories.ClientRepository;
 
 import java.text.ParseException;
@@ -29,6 +30,10 @@ public class ClientService {
 
     public List<Client> getAllClients() {
         return clientRepository.findAll();
+    }
+
+    public Client getClientByUser (User user) {
+        return clientRepository.findClientByUser(user);
     }
 
     public void add(Client client) {

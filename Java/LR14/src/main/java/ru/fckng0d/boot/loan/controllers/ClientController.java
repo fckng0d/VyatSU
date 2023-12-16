@@ -31,6 +31,7 @@ public class ClientController {
 
     @GetMapping
     public String index(Model model) {
+        System.out.println("ПИЗДА");
         model.addAttribute("clients", clientService.getAllClients());
         return "client/index";
     }
@@ -60,7 +61,7 @@ public class ClientController {
         return "client/change";
     }
 
-    @PostMapping
+    @PostMapping("/new")
     public String create(@ModelAttribute("client") @Valid Client client, BindingResult bindingResult) {
         mode = 0;
         clientValidator.validate(client, bindingResult);

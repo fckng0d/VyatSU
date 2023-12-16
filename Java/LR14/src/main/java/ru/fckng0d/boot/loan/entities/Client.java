@@ -11,7 +11,6 @@ import java.util.List;
 @Entity
 public class Client {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "client_id")
     private Long clientId;
 
@@ -29,38 +28,11 @@ public class Client {
     @Column(unique = true)
     private String passport;
 
+    @OneToOne  // Указываем, что есть связь один-к-одному с сущностью User
+    @JoinColumn(name = "username")
+    private User user;
+
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL/*, orphanRemoval = true*/)
     private List<Loan> loanList;
-
-
-    public Client(String lastName, String firstName, String patronymic, String birthDate, String passport) {
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.patronymic = patronymic;
-        this.birthDate = birthDate;
-        this.passport = passport;
-        loanList = new ArrayList<>();
-    }
-
-
-//    public String toString1() {
-//        return "Client{" +
-//                "clientId=" + clientId +
-//                ", passport='" + passport + '\'' +
-//                ", bankAccountList=" + bankAccountList +
-//                '}';
-//    }
-//
-//    @Override
-//    public String toString() {
-//        return "Client{" +
-//                "clientId=" + clientId +
-//                ", lastName='" + lastName + '\'' +
-//                ", firstName='" + firstName + '\'' +
-//                ", patronymic='" + patronymic + '\'' +
-//                ", birthDate=" + birthDate +
-//                ", passport='" + passport + '\'' +
-//                '}';
-//    }
 }
 

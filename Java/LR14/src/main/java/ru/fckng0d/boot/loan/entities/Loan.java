@@ -1,9 +1,9 @@
 package ru.fckng0d.boot.loan.entities;
 
-import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
@@ -43,17 +43,5 @@ public class Loan {
         this.dateOfGive = dateOfGive;
         this.client = client;
     }
-
-//    @Override
-//    public String toString() {
-//        return "Loan{" +
-//                "loanId=" + loanId +
-//                ", loanAmount=" + loanAmount +
-//                ", interestRate=" + interestRate +
-//                ", loanTerm=" + loanTerm +
-//                ", dateOfGive=" + dateOfGive +
-//                ", dateOfTotalRepayment=" + dateOfTotalRepayment +
-//                '}';
-//    }
 }
 
