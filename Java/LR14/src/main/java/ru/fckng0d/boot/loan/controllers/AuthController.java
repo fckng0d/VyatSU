@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,6 +31,22 @@ public class AuthController {
 
     @GetMapping("/hello")
     public String hello() {
+//        userService.encode("user1", new BCryptPasswordEncoder());
+//        userService.encode("user2", new BCryptPasswordEncoder());
+//        userService.encode("user3", new BCryptPasswordEncoder());
+//        userService.encode("user4", new BCryptPasswordEncoder());
+//        userService.encode("user5", new BCryptPasswordEncoder());
+//        userService.encode("user6", new BCryptPasswordEncoder());
+//        userService.encode("user7", new BCryptPasswordEncoder());
+//        userService.encode("user8", new BCryptPasswordEncoder());
+//        userService.encode("user9", new BCryptPasswordEncoder());
+//        userService.encode("user10", new BCryptPasswordEncoder());
+//        userService.encode("user11", new BCryptPasswordEncoder());
+//        userService.encode("user12", new BCryptPasswordEncoder());
+//        userService.encode("user13", new BCryptPasswordEncoder());
+//        userService.encode("admin1", new BCryptPasswordEncoder());
+//        userService.encode("admin2", new BCryptPasswordEncoder());
+//        userService.encode("admin3", new BCryptPasswordEncoder());
         return "auth/hello";
     }
 

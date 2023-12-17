@@ -15,9 +15,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.jdbc.core.JdbcTemplate;
+import ru.fckng0d.boot.loan.entities.User;
 import ru.fckng0d.boot.loan.services.UserService;
 
 import javax.sql.DataSource;
@@ -44,6 +49,8 @@ public class SecurityConfig extends WebSecurityConfiguration {
                         .requestMatchers("/clients").hasAnyRole("ADMIN")
                         .requestMatchers("/clients/{id:\\d+}").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/clients/new").hasAnyRole("ADMIN")
+                        .requestMatchers("/clients/filter**").hasAnyRole("ADMIN")
+                        .requestMatchers("/clients/{id:\\d+}/loans/filter**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/clients/{id:\\d+}/loans").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/clients/{id}/loans/{loanId}").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/clients/{id}/loans/{loanId}/new").hasAnyRole("ADMIN", "USER")
@@ -82,9 +89,15 @@ public class SecurityConfig extends WebSecurityConfiguration {
     }
 
     @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userService);
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }
 
@@ -101,7 +114,6 @@ public class SecurityConfig extends WebSecurityConfiguration {
 
 //    @Bean
 //    public UserDetailsService userDetailsService(UserService userService) {
-////        System.out.println("userDetails");
 //        return new UserDetailsService() {
 //            @Override
 //            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -110,15 +122,12 @@ public class SecurityConfig extends WebSecurityConfiguration {
 //                    System.out.println("User not found");
 //                    throw new UsernameNotFoundException("User not found");
 //                }
+//                userService.encode(username);
 //                return org.springframework.security.core.userdetails.User
 //                        .withUsername(username)
-//                        .password(userService.getPasswordByUserName(username))
+//                        .password(user.getPassword())
 //                        .roles(userService.getRoleByUsername(username))
 //                        .build();
-////                        .withUsername("admin")
-////                        .password("pass")
-////                        .roles("ADMIN")
-////                        .build();
 //            }
 //        };
 //    }

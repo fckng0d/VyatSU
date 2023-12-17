@@ -1,16 +1,18 @@
 package ru.fckng0d.boot.loan.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.fckng0d.boot.loan.entities.Client;
 import ru.fckng0d.boot.loan.entities.User;
 import ru.fckng0d.boot.loan.repositories.ClientRepository;
+import ru.fckng0d.boot.loan.specifications.ClientSpecification;
 
 import javax.sql.DataSource;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,6 +43,18 @@ public class ClientService {
         return clientRepository.findAll();
     }
 
+    public Page<Client> getAllClients(Pageable pageable) {
+        return clientRepository.findAll(pageable);
+    }
+
+    public Page<Client> getAllClients(String lastName, String birthDate, String passport, Pageable pageable) {
+        Specification<Client> specification = Specification
+                .where(ClientSpecification.likeLastName(lastName))
+                .and(ClientSpecification.hasBirthDate(birthDate))
+                .and(ClientSpecification.likePassport(passport));
+        return clientRepository.findAll(specification, pageable);
+    }
+
     public Client getClientByUser(User user) {
         return clientRepository.findClientByUser(user);
     }
@@ -65,31 +79,31 @@ public class ClientService {
         }
     }
 
-    public List<Client> filter(String lastName, String birthDate, String passport) {
-        List<Client> filteredList = getAllClients();
-
-        if (lastName != null && !lastName.isBlank()) {
-            filteredList.removeIf(c -> !c.getLastName().toLowerCase().contains(lastName.toLowerCase()));
-        }
-        if (birthDate != null && !birthDate.isBlank()) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-            try {
-                formatter.parse(birthDate);
-                for (Client c : filteredList) {
-                    if (!c.getBirthDate().equals(birthDate)) {
-                        filteredList.remove(c);
-                    }
-                }
-            } catch (ParseException ignored) {
-            }
-        }
-        if (passport != null && !passport.isBlank()) {
-            filteredList.removeIf(c -> !c.getPassport().contains(passport));
-        }
-
-        return filteredList;
-    }
+//    public List<Client> filter(String lastName, String birthDate, String passport) {
+//        List<Client> filteredList = getAllClients();
+//
+//        if (lastName != null && !lastName.isBlank()) {
+//            filteredList.removeIf(c -> !c.getLastName().toLowerCase().contains(lastName.toLowerCase()));
+//        }
+//        if (birthDate != null && !birthDate.isBlank()) {
+//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//
+//            try {
+//                formatter.parse(birthDate);
+//                for (Client c : filteredList) {
+//                    if (!c.getBirthDate().equals(birthDate)) {
+//                        filteredList.remove(c);
+//                    }
+//                }
+//            } catch (ParseException ignored) {
+//            }
+//        }
+//        if (passport != null && !passport.isBlank()) {
+//            filteredList.removeIf(c -> !c.getPassport().contains(passport));
+//        }
+//
+//        return filteredList;
+//    }
 
     public Client isThereSuchPassport(Client client, Long id, int mode) {
         if (mode == 0) {

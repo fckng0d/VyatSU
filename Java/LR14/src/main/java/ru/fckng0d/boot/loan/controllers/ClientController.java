@@ -2,16 +2,21 @@ package ru.fckng0d.boot.loan.controllers;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 import ru.fckng0d.boot.loan.entities.Client;
 import ru.fckng0d.boot.loan.services.ClientService;
 import ru.fckng0d.boot.loan.util.ClientValidator;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/clients")
@@ -29,9 +34,21 @@ public class ClientController {
         this.clientValidator = clientValidator;
     }
 
+//    @GetMapping
+//    public String index(Model model) {
+//            model.addAttribute("clients", clientService.getAllClients());
+//        return "client/index";
+//    }
+
     @GetMapping
-    public String index(Model model) {
-            model.addAttribute("clients", clientService.getAllClients());
+    public String index(Model model, @RequestParam(defaultValue = "0") int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        Page<Client> clientPage = clientService.getAllClients(pageable);
+        model.addAttribute("clients", clientPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", clientPage.getTotalPages());
+        // топ
+
         return "client/index";
     }
 
@@ -45,15 +62,46 @@ public class ClientController {
     public String filter(@RequestParam(value = "lastName", required = false) String lastName,
                          @RequestParam(value = "birthDate", required = false) String birthDate,
                          @RequestParam(value = "passport", required = false) String passport,
+                         @RequestParam(defaultValue = "0") int page,
                          Model model) {
         Client client = new Client();
-        model.addAttribute("clients", clientService.filter(lastName, birthDate, passport));
+        Pageable pageable = PageRequest.of(page, 5);
+        Page<Client> organizationPage = clientService.getAllClients(lastName, birthDate, passport, pageable);
+
+        model.addAttribute("clients", organizationPage.getContent());
         model.addAttribute("client", client);
         model.addAttribute("lastName", lastName);
         model.addAttribute("birthDate", birthDate);
         model.addAttribute("passport", passport);
+
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", organizationPage.getTotalPages());
+
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("/clients/filter");
+        if (lastName != null && !lastName.isEmpty()) uriBuilder.queryParam("lastName", lastName);
+        if (birthDate != null && !birthDate.isEmpty()) uriBuilder.queryParam("birthDate", birthDate);
+        if (passport != null) uriBuilder.queryParam("passport", passport);
+        model.addAttribute("filterUrl", uriBuilder.build().toString());
+
+//        List<Client> topOrganizations = clientService.getTopOrganizations();
+//        model.addAttribute("topOrganizations", topOrganizations);
+
         return "client/index";
     }
+
+//    @GetMapping("/filter")
+//    public String filter(@RequestParam(value = "lastName", required = false) String lastName,
+//                         @RequestParam(value = "birthDate", required = false) String birthDate,
+//                         @RequestParam(value = "passport", required = false) String passport,
+//                         Model model) {
+//        Client client = new Client();
+//        model.addAttribute("clients", clientService.filter(lastName, birthDate, passport));
+//        model.addAttribute("client", client);
+//        model.addAttribute("lastName", lastName);
+//        model.addAttribute("birthDate", birthDate);
+//        model.addAttribute("passport", passport);
+//        return "client/index";
+//    }
 
     @GetMapping("/new")
     public String newClient(@ModelAttribute("client") Client client) {
