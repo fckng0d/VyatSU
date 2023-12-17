@@ -8,12 +8,8 @@ import ru.fckng0d.boot.loan.repositories.ClientRepository;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 @Service
 public class ClientService {
@@ -22,7 +18,7 @@ public class ClientService {
     @Autowired
     public ClientService(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
-    }   
+    }
 
     public Client getClientById(Long id) {
         return clientRepository.findById(id).orElse(null);
@@ -32,7 +28,7 @@ public class ClientService {
         return clientRepository.findAll();
     }
 
-    public Client getClientByUser (User user) {
+    public Client getClientByUser(User user) {
         return clientRepository.findClientByUser(user);
     }
 

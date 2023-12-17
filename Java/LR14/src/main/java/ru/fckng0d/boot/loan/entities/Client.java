@@ -28,7 +28,7 @@ public class Client {
     @Column(unique = true)
     private String passport;
 
-    @OneToOne  // Указываем, что есть связь один-к-одному с сущностью User
+    @OneToOne
     @JoinColumn(name = "username")
     private User user;
 

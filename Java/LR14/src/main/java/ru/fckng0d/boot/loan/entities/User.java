@@ -24,6 +24,6 @@ public class User {
     @JoinColumn(name = "username")
     private Client client;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private List<Authority> authorityList;
 }

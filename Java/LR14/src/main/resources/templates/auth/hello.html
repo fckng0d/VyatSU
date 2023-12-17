@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Добро пожаловать в мир кредитов!</title>
     <meta charset="UTF-8">
@@ -46,7 +46,7 @@
     команда специалистов всегда готова помочь вам сделать правильный выбор и ответить на все ваши вопросы.</p>
 <p>Нажмите на кнопку ниже, чтобы начать свое путешествие в мир кредитов и получить финансовую поддержку уже сегодня!</p>
 <button id="loginButton">Login</button>
-<form th:method="post" th:action="@{/hello}">
+<form th:method="post" th:action="@{/login}">
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>

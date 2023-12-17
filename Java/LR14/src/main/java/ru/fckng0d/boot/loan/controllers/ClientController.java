@@ -31,8 +31,7 @@ public class ClientController {
 
     @GetMapping
     public String index(Model model) {
-        System.out.println("ПИЗДА");
-        model.addAttribute("clients", clientService.getAllClients());
+            model.addAttribute("clients", clientService.getAllClients());
         return "client/index";
     }
 
