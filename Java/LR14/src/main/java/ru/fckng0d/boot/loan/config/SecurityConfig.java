@@ -39,10 +39,14 @@ public class SecurityConfig extends WebSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authorize -> authorize
+//        CookieClearingLogoutHandler cookies = new CookieClearingLogoutHandler("our-custom-cookie");
+        http.authorizeHttpRequests( authorize -> authorize
                         .requestMatchers("/clients").hasAnyRole("ADMIN")
-//                        .requestMatchers("/clients/{id}").hasAnyRole("ADMIN")
+                        .requestMatchers("/clients/{id:\\d+}").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/clients/new").hasAnyRole("ADMIN")
+                        .requestMatchers("/clients/{id:\\d+}/loans").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/clients/{id}/loans/{loanId}").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/clients/{id}/loans/{loanId}/new").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/clients/{clientId}/loans/{loanId}/delete").hasAnyRole("ADMIN")
                         .requestMatchers("/clients/{clientId}/loans/{loanId}/edit").hasAnyRole("ADMIN")
                         .anyRequest().permitAll())
@@ -50,10 +54,13 @@ public class SecurityConfig extends WebSecurityConfiguration {
                         .loginPage("/login")
                         .successHandler(new CustomAuthenticationSuccessHandler())
 //                        .loginProcessingUrl("/")
-//                        .defaultSuccessUrl("/clients")
                         .permitAll())
                 .logout((logout) -> logout
-                        .logoutSuccessUrl("/logout").permitAll());
+                        .invalidateHttpSession(true)
+                        .logoutSuccessUrl("/logout")
+                        .deleteCookies("JSESSIONID")
+                        .clearAuthentication(true)
+                        .permitAll());
         return http.build();
     }
 
@@ -64,16 +71,9 @@ public class SecurityConfig extends WebSecurityConfiguration {
             for (GrantedAuthority authority : authorities) {
                 if (authority.getAuthority().equals("ROLE_ADMIN")) {
                     response.sendRedirect("/clients");
-                    System.out.println("GBPLFFG");
                     return;
                 } else if (authority.getAuthority().equals("ROLE_USER")) {
-                    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-                    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                    String username = userDetails.getUsername();
-
-                    String clientIdQuery = "SELECT c.client_id FROM client c WHERE c.username = ?";
-                    Long clientId = jdbcTemplate.queryForObject(clientIdQuery, Long.class, username);
-
+                    Long clientId = userService.getClientIdByAuthentication(authentication, dataSource);
                     response.sendRedirect("/clients/" + clientId);
                     return;
                 }

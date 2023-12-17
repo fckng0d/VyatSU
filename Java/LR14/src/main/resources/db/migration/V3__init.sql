@@ -1,19 +1,21 @@
 CREATE TABLE User_t
 (
-    username VARCHAR(30) NOT NULL PRIMARY KEY,
-    password VARCHAR NOT NULL
+    username  VARCHAR(30) NOT NULL PRIMARY KEY,
+    real_name VARCHAR(30) NOT NULL,
+    password  VARCHAR     NOT NULL
 );
 
 alter table User_t
     owner to postgres;
 
 INSERT INTO User_t
-VALUES ('admin', '{noop}pass'),
-       ('user', '{noop}pass');
+VALUES ('admin', 'Админ1', '{noop}pass'),
+       ('user1', 'Даниил', '{noop}pass'),
+       ('user2', 'Егор', '{noop}pass');
 
 CREATE TABLE authorities
 (
-    auth_id bigserial not null primary key,
+    auth_id   bigserial   not null primary key,
     username  varchar(50) NOT NULL,
     authority varchar(50) NOT NULL,
 
@@ -26,7 +28,8 @@ CREATE TABLE authorities
 
 INSERT INTO authorities
 VALUES (default, 'admin', 'ROLE_ADMIN'),
-       (default, 'user', 'ROLE_USER');
+       (default, 'user1', 'ROLE_USER'),
+       (default, 'user2', 'ROLE_USER');
 
 create table client
 (
@@ -34,28 +37,29 @@ create table client
     last_name  varchar(50) not null,
     first_name varchar(30) not null,
     patronymic varchar(30),
-    birth_date varchar(10)         not null,
+    birth_date varchar(10) not null,
     passport   varchar(10)
         constraint uk_c99kgixns845scir9xks4jxhp
             unique,
-    username varchar(30) /*unique*/ references User_t(username)
+    username   varchar(30) /*unique*/ references User_t (username)
 );
 
 alter table client
     owner to postgres;
 
 insert into client
-values (default, 'Даниил', 'Коковихин', 'Николаевич', '2003-12-31', 1212121212, 'user');
+values (default, 'Даниил', 'Коковихин', 'Николаевич', '2003-12-31', 1212121212, 'user1'),
+       (default, 'Егор', 'Русаков', 'Алексеевич', '2004-09-18', 5555566666, 'user2');
 
 create table loan
 (
     loan_id                 bigserial primary key,
     loan_amount             double precision not null,
     interest_rate           double precision not null,
-    loan_term               integer not null,
-    date_of_give            date not null,
+    loan_term               integer          not null,
+    date_of_give            date             not null,
     date_of_total_repayment date,
-    client_id               bigint not null
+    client_id               bigint           not null
         constraint fk16fy7rykvwh9r0t53pv9qntvk
             references client
             on delete cascade
@@ -66,7 +70,9 @@ alter table loan
 
 
 insert into loan
-values (default, 20000, 5.6, 12,'2022-10-14', null,  1),
-       (default, 1000, 8.6, 3,'2023-09-11', null,  1),
-       (default, 140000, 6.6, 12,'2021-05-24', null,  1);
+values (default, 20000, 5.6, 12, '2022-10-14', null, 1),
+       (default, 1000, 8.6, 3, '2023-09-11', null, 1),
+       (default, 140000, 6.6, 12, '2021-05-24', null, 1),
+       (default, 5000, 7.6, 6, '2023-01-12', null, 2),
+       (default, 17944, 5.8, 12, '2022-03-18', null, 2);
 

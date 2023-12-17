@@ -1,7 +1,11 @@
 package ru.fckng0d.boot.loan.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +20,7 @@ import ru.fckng0d.boot.loan.services.UserService;
 public class AuthController {
     private final UserService userService;
     private final ClientService clientService;
+    SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
     @Autowired
     public AuthController(UserService userService, ClientService clientService) {
@@ -28,15 +33,16 @@ public class AuthController {
         return "auth/hello";
     }
 
-    /*@PostMapping("/login")
+    @GetMapping("/login")
     public String login()
     {
-        return "redirect:/hello?denied=true";
-    }*/
+        return "redirect:/hello";
+    }
 
     @GetMapping("/logout")
-    public String logout()
+    public String logout(Authentication authentication, HttpServletRequest request, HttpServletResponse response)
     {
+        this.logoutHandler.logout(request, response, authentication);
         return "redirect:/hello";
     }
 

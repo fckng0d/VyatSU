@@ -1,6 +1,7 @@
 package ru.fckng0d.boot.loan.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import ru.fckng0d.boot.loan.entities.User;
 import ru.fckng0d.boot.loan.repositories.UserRepository;
 
+import javax.sql.DataSource;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -40,6 +42,19 @@ public class UserService implements UserDetailsService {
 
     public String getRoleByUsername(String username) {
         return authorityService.getRoleByUser(getUserByUserName(username));
+    }
+
+    public String getRealNameByUsername(String username) {
+        return getUserByUserName(username).getRealName();
+    }
+
+    public Long getClientIdByAuthentication(Authentication authentication, DataSource dataSource) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+
+        String clientIdQuery = "SELECT c.client_id FROM client c WHERE c.username = ?";
+        return jdbcTemplate.queryForObject(clientIdQuery, Long.class, username);
     }
 
     @Override

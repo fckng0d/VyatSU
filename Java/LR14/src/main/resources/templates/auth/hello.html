@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Добро пожаловать в мир кредитов!</title>
-    <meta charset="UTF-8">
+    <meta charset="utf-8"/>
+    <title>Добро пожаловать</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <style>
         body {
             background-color: #f2f2f2;
@@ -19,101 +22,149 @@
 
         p {
             font-size: 18px;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
         }
 
-        .credit-btn {
-            background-color: #0066cc;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-            font-size: 20px;
-            padding: 10px 20px;
-            text-decoration: none;
+        .logout-form {
+            position: absolute;
+            right: 40px;
+            bottom: 10px;
         }
 
-        .credit-btn:hover {
+        .profile {
+            position: absolute;
+            right: 140px;
+            bottom: 18px;
+        }
+
+        #loginButton, button {
             background-color: #005cb3;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            max-width: 400px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/hello">Кредитка</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="nav-link"
+                   href="/clients">Клиенты</a>
+            </li>
+            <li class="nav-item">
+                <a style="color: #005cb3;" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="profile"
+                   th:text="${@userService.getRealNameByUsername(#authentication.getName())}"></a>
+                <a style="color: #005cb3;" th:if="${#authorization.expression('hasRole(''USER'')')}" class="profile"
+                   th:href="'/clients/' + ${@clientService.getClientIdByUsername(#authentication.getName())}"
+                   th:text="${@userService.getRealNameByUsername(#authentication.getName())}"></a>
+            </li>
+            <li class="nav-item">
+                <form th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+                      action="/logout" method="get" class="logout-form">
+                    <button type="submit" class="btn btn-danger">Logout</button>
+                </form>
+                <form th:if="${#authorization.expression('hasRole(''USER'')')}"
+                      action="/logout" method="get" class="logout-form">
+                    <button type="submit" class="btn btn-danger">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</nav>
 <h1>Добро пожаловать в мир кредитов!</h1>
-<p>Ищете финансовую поддержку? Мы рады приветствовать вас на нашей странице о кредитах! Здесь вы найдете информацию о
-    различных типах кредитов и сможете выбрать тот, который наиболее подходит вам.</p>
-<p>Мы предлагаем широкий спектр кредитных продуктов, от малых потребительских кредитов до больших ипотечных займов. Наша
-    команда специалистов всегда готова помочь вам сделать правильный выбор и ответить на все ваши вопросы.</p>
+<br>
+<br>
+<p>Ищете финансовую поддержку? Мы рады приветствовать вас на нашей странице о кредитах!</p>
+<p>Здесь вы найдете информацию о различных типах кредитов и сможете выбрать тот, который наиболее подходит вам.</p>
+<p>Мы предлагаем широкий спектр кредитных продуктов, от малых потребительских кредитов до больших ипотечных займов.</p>
+<p>Наша команда специалистов всегда готова помочь вам сделать правильный выбор и ответить на все ваши вопросы.</p>
 <p>Нажмите на кнопку ниже, чтобы начать свое путешествие в мир кредитов и получить финансовую поддержку уже сегодня!</p>
 <button id="loginButton">Login</button>
 <form th:method="post" th:action="@{/login}">
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Login</h2>
             <form>
-                <input type="text" id="username" name="username" placeholder="Username">
-                <input type="password" id="password" name="password" placeholder="Password">
-                <button type="submit">Login</button>
+                <input style="margin-top: 20px" type="text" id="username" name="username" placeholder="Username">
+                <input style="margin-top: 10px" type="password" id="password" name="password" placeholder="Password">
+                <button id="button" style="margin-top: 20px" type="submit">Login</button>
             </form>
         </div>
     </div>
 </form>
 
-<style>
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-    }
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-</style>
-
 <script>
-    var modal = document.getElementById("loginModal");
-    var btn = document.getElementById("loginButton");
+    var modal = document.getElementById('loginModal');
+    var loginButton = document.getElementById("loginButton");
     var span = document.getElementsByClassName("close")[0];
+    var loginButtonContainer = loginButton.parentElement;
+    var originalDisplayStyle = "";
 
-    btn.onclick = function() {
+    loginButton.onclick = function () {
         modal.style.display = "block";
+        originalDisplayStyle = loginButton.style.display;
+        loginButton.style.display = "none";
     }
 
-    span.onclick = function() {
+    span.onclick = function () {
         modal.style.display = "none";
+        loginButton.style.display = originalDisplayStyle;
+        document.body.appendChild(loginButton);
+        loginButton.style.margin = "auto";
     }
 
-    window.onclick = function(event) {
-        if (event.target == modal) {
+    window.onclick = function (event) {
+        if (event.target === modal) {
             modal.style.display = "none";
+            loginButton.style.display = originalDisplayStyle;
+            document.body.appendChild(loginButton);
+            loginButton.style.margin = "auto";
         }
     }
 </script>
+
 </body>
 </html>

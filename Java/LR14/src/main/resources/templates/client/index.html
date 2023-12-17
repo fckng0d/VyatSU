@@ -6,11 +6,23 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <style>
+        .logout-form {
+            position: absolute;
+            right: 40px;
+            bottom: 10px;
+        }
+        .profile {
+            position: absolute;
+            right: 140px;
+            bottom: 18px;
+        }
+    </style>
 </head>
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand">Кредитка</a>
+    <a class="navbar-brand" href="/hello">Кредитка</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -21,6 +33,15 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/clients/new">Добавить клиента</a>
+            </li>
+            <li class="nav-item">
+                <a style="color: #005cb3;" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="profile"
+                   th:text="${@userService.getRealNameByUsername(#authentication.getName())}"></a>
+            </li>
+            <li class="nav-item">
+                <form action="/logout" method="get" class="logout-form">
+                    <button type="submit" class="btn btn-danger">Logout</button>
+                </form>
             </li>
         </ul>
     </div>

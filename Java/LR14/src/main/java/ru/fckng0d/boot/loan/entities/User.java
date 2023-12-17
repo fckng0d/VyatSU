@@ -17,6 +17,9 @@ public class User {
     @Column(name = "username")
     private String username;
 
+    @Column(name = "real_name")
+    private String realName;
+
     @Column
     private String password;
 
