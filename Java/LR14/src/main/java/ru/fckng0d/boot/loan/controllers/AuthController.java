@@ -8,25 +8,29 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import ru.fckng0d.boot.loan.entities.Authority;
+import ru.fckng0d.boot.loan.entities.Client;
 import ru.fckng0d.boot.loan.entities.User;
+import ru.fckng0d.boot.loan.services.AuthorityService;
 import ru.fckng0d.boot.loan.services.ClientService;
 import ru.fckng0d.boot.loan.services.UserService;
+
+import javax.validation.Valid;
 
 @Controller
 public class AuthController {
     private final UserService userService;
     private final ClientService clientService;
+    private final AuthorityService authorityService;
     SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
     @Autowired
-    public AuthController(UserService userService, ClientService clientService) {
+    public AuthController(UserService userService, ClientService clientService, AuthorityService authorityService) {
         this.userService = userService;
         this.clientService = clientService;
+        this.authorityService = authorityService;
     }
 
     @GetMapping("/hello")
@@ -51,43 +55,48 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String login()
-    {
+    public String login() {
         return "redirect:/hello";
     }
 
     @GetMapping("/logout")
-    public String logout(Authentication authentication, HttpServletRequest request, HttpServletResponse response)
-    {
+    public String logout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
         this.logoutHandler.logout(request, response, authentication);
         return "redirect:/hello";
     }
 
-//    @PostMapping("login")
-//    public String auth(@RequestParam("username") String username,
-//                       @RequestParam("password") String password, Model model,
-//                       RedirectAttributes redirectAttributes) {
-//        User user = userService.getUserByUserName(username);
-////        System.out.println("{noop}" + password);
-//        if (user != null) {
-////            System.out.println(userService.getPasswordByUserName(username));
-////            System.out.println(userService.getRoleByUsername(username));
-//            if (("{noop}" + password).equals(userService.getPasswordByUserName(username))) {
-////                model.addAttribute("username", username);
-//                if (userService.getRoleByUsername(username).equals("ROLE_USER")) {
-//                    Long clientId = userService.clientIdByUserName(username);
-//                    redirectAttributes.addAttribute("id", clientId);
-////                    System.out.println("ДА, ЮЗЕР");
-//                    return "redirect:/clients/{id}";
-//                } /*else if (userService.getRoleByUsername(username).equals("ROLE_ADMIN")) {
-////                    System.out.println("ДА, АДМИН");
-//                    return "redirect:/clients";
-//                }*/
-//            }
-//        }
-//
-//        System.out.println("РЕДИРЕКТ");
-//
-//        return "auth/hello";
-//    }
+    @GetMapping("/access-denied")
+    public String accessDenied() {
+        return "auth/access-denied";
+    }
+
+    @GetMapping("/registration")
+    public String newClient(@ModelAttribute("client") Client client) {
+        return "auth/registration";
+    }
+
+    @PostMapping("/registration")
+    public String create(@ModelAttribute("client") @Valid Client client, BindingResult bindingResult,
+                         @RequestParam("username") String username,
+                         @RequestParam("password") String password) {
+        if (bindingResult.hasErrors()) {
+            return "auth/registration";
+        }
+        User user = new User();
+        user.setUsername(username);
+        user.setRealName(client.getFirstName());
+        user.setPassword(password);
+        userService.save(user);
+        userService.encode(username, new BCryptPasswordEncoder());
+
+        Authority authority = new Authority();
+        authority.setUser(user);
+        authority.setRole("ROLE_USER");
+        authorityService.save(authority);
+
+        client.setUser(user);
+        client.setCountOfLogins(0);
+        clientService.add(client);
+        return "redirect:" + "/clients/" + clientService.getClientIdByUsername(username);
+    }
 }

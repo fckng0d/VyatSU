@@ -11,6 +11,7 @@ import java.util.List;
 @Entity
 public class Client {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "client_id")
     private Long clientId;
 
@@ -24,6 +25,9 @@ public class Client {
 
     @Column(name = "birth_date")
     private String birthDate;
+
+    @Column(name = "count_of_logins")
+    private Integer countOfLogins;
 
     @Column(unique = true)
     private String passport;

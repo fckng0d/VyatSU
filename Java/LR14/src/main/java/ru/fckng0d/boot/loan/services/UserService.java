@@ -7,7 +7,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.fckng0d.boot.loan.entities.User;
@@ -32,18 +31,28 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username).orElse(null);
     }
 
-    public String getPasswordByUserName(String username) {
-        Optional<User> user = userRepository.findByUsername(username);
-        return user.map(User::getPassword).orElse(null);
-    }
-
-//    public Long clientIdByUserName(String username) {
-//        User user = getUserByUserName(username);
-//        return clientService.getClientByUser(user).getClientId();
-//    }
-
     public String getRoleByUsername(String username) {
         return authorityService.getRoleByUser(getUserByUserName(username));
+    }
+
+    public void save(User user) {
+        userRepository.save(user);
+    }
+
+    public void update(User user, Long userId) {
+        User user2 = user;
+    }
+
+    public void update(String username, User updatedUser) {
+        User user = getUserByUserName(username);
+        if (user != null) {
+            user.setUsername(updatedUser.getUsername());
+            user.setPassword(updatedUser.getPassword());
+            user.setRealName(updatedUser.getRealName());
+            user.setClient(updatedUser.getClient());
+            user.setAuthorityList(updatedUser.getAuthorityList());
+            userRepository.save(user);
+        }
     }
 
     public String getRealNameByUsername(String username) {
@@ -76,7 +85,6 @@ public class UserService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
-//        encode(username);
 
         return new org.springframework.security.core.userdetails.User(user.getUsername(),
                 user.getPassword(),
@@ -87,20 +95,4 @@ public class UserService implements UserDetailsService {
         );
 
     }
-
-    //    public UserDetailsService getUserDetailsServiceByUsername(String username) {
-    //        return new UserDetailsService() {
-    //            @Override
-    //            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    //                User user = getUserByUserName(username);
-    //                if (user == null) {
-    //                    throw new UsernameNotFoundException("User not found");
-    //                }
-    //                return org.springframework.security.core.userdetails.User.withUsername(user.getUsername())
-    //                        .password(user.getPassword())
-    //                        .roles(user.getAuthority().getRole())
-    //                        .build();
-    //            }
-    //        };
-    //    }
 }

@@ -12,18 +12,31 @@
             right: 40px;
             bottom: 10px;
         }
+
         .profile {
             position: absolute;
             right: 140px;
             bottom: 18px;
         }
+
+        .centered {
+            text-align: center;
+        }
+
+        .fixed-top-nav {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top-nav">
     <a class="navbar-brand" href="/hello">Кредитка</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
@@ -47,6 +60,16 @@
     </div>
 </nav>
 
+<div class="centered" style="margin-top: 80px">
+    <h4>Топ-3 по входам в аккаунт</h4>
+    <ul th:if="${topClients != null}" style="list-style-type: none; padding: 0; margin: 0;">
+        <li th:each="client : ${topClients}">
+            <a th:href="@{'/clients/' + ${client.getClientId()}}" th:text="${client.getFirstName()}"></a>
+            <span th:text="' - ' + ${client.getCountOfLogins()} + ' вход(а/ов) в аккаунт'"></span>
+        </li>
+    </ul>
+</div>
+<br>
 <div class="container">
     <br>
     <h5>Клиенты</h5>
@@ -86,7 +109,8 @@
     </nav>
     <hr>
     <br>
-    <button style="margin-top: 10px" class="btn btn-primary" onclick="clearQueryParamsAndNavigate()">Добавить клиента</button>
+    <button style="margin-top: 10px" class="btn btn-primary" onclick="clearQueryParamsAndNavigate()">Добавить клиента
+    </button>
 
     <br>
 
@@ -140,8 +164,6 @@
     }
 
     function clearQueryParamsAndNavigate() {
-        var currentUrl = window.location.href;
-        var urlWithoutParams = currentUrl.split('?')[0];
         window.location.href = "/clients/new";
     }
 </script>

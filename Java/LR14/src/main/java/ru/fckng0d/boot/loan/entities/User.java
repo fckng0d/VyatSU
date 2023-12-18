@@ -23,7 +23,7 @@ public class User {
     @Column
     private String password;
 
-    @OneToOne(mappedBy = "user")  // Указываем, что есть связь один-к-одному с сущностью Client
+    @OneToOne(mappedBy = "user")
     @JoinColumn(name = "username")
     private Client client;
 

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ошибка доступа</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/hello">Кредитка</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="nav-link"
+                   href="/clients">Клиенты</a>
+            </li>
+            <li class="nav-item">
+                <a style="color: #005cb3;" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="profile"
+                   th:text="${@userService.getRealNameByUsername(#authentication.getName())}"></a>
+                <a style="color: #005cb3;" th:if="${#authorization.expression('hasRole(''USER'')')}" class="profile"
+                   th:href="'/clients/' + ${@clientService.getClientIdByUsername(#authentication.getName())}"
+                   th:text="${@userService.getRealNameByUsername(#authentication.getName())}"></a>
+            </li>
+            <li class="nav-item">
+                <form th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+                      action="/logout" method="get" class="logout-form">
+                    <button type="submit" class="btn btn-danger">Logout</button>
+                </form>
+                <form th:if="${#authorization.expression('hasRole(''USER'')')}"
+                      action="/logout" method="get" class="logout-form">
+                    <button type="submit" class="btn btn-danger">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div>
+    <h2>К сожалению, у вас нет разрешения на просмотр этой страницы</h2>
+    <p>Нажмите <a href="/hello">ЗДЕСЬ</a>, чтобы вернуться на главную страницу.</p>
+</div>
+<img style="margin-top: 40px" th:src="@{/error.jpg}" width="388" height="291" alt="НУ ПОЧЕМУУУУУ">
+</body>
+
+<style>
+    body {
+        background-color: #f2f2f2;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    h1 {
+        color: #0066cc;
+        margin-top: 150px;
+    }
+
+    p {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    h2 {
+        margin-top: 100px;
+        text-align: center;
+        color: #333;
+    }
+
+    a {
+        color: #007BFF;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    .logout-form {
+        position: absolute;
+        right: 40px;
+        bottom: 10px;
+    }
+
+    .profile {
+        position: absolute;
+        right: 140px;
+        bottom: 18px;
+    }
+</style>
+</html>

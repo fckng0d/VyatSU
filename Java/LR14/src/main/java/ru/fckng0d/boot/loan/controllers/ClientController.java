@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.fckng0d.boot.loan.entities.Client;
 import ru.fckng0d.boot.loan.services.ClientService;
+import ru.fckng0d.boot.loan.security.ClientAccess;
 import ru.fckng0d.boot.loan.util.ClientValidator;
 
 import javax.validation.Valid;
@@ -34,12 +35,6 @@ public class ClientController {
         this.clientValidator = clientValidator;
     }
 
-//    @GetMapping
-//    public String index(Model model) {
-//            model.addAttribute("clients", clientService.getAllClients());
-//        return "client/index";
-//    }
-
     @GetMapping
     public String index(Model model, @RequestParam(defaultValue = "0") int page) {
         Pageable pageable = PageRequest.of(page, 5);
@@ -47,14 +42,17 @@ public class ClientController {
         model.addAttribute("clients", clientPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", clientPage.getTotalPages());
-        // топ
+
+        List<Client> topClients = clientService.getTopClients();
+        model.addAttribute("topClients", topClients);
 
         return "client/index";
     }
 
-    @GetMapping("/{id}")
-    public String show(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("client", clientService.getClientById(id));
+    @ClientAccess
+    @GetMapping("/{clientId}")
+    public String show(@PathVariable("clientId") Long clientId, Model model) {
+        model.addAttribute("client", clientService.getClientById(clientId));
         return "client/show";
     }
 
@@ -66,16 +64,16 @@ public class ClientController {
                          Model model) {
         Client client = new Client();
         Pageable pageable = PageRequest.of(page, 5);
-        Page<Client> organizationPage = clientService.getAllClients(lastName, birthDate, passport, pageable);
+        Page<Client> clientPage = clientService.getAllClients(lastName, birthDate, passport, pageable);
 
-        model.addAttribute("clients", organizationPage.getContent());
+        model.addAttribute("clients", clientPage.getContent());
         model.addAttribute("client", client);
         model.addAttribute("lastName", lastName);
         model.addAttribute("birthDate", birthDate);
         model.addAttribute("passport", passport);
 
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", organizationPage.getTotalPages());
+        model.addAttribute("totalPages", clientPage.getTotalPages());
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("/clients/filter");
         if (lastName != null && !lastName.isEmpty()) uriBuilder.queryParam("lastName", lastName);
@@ -83,25 +81,11 @@ public class ClientController {
         if (passport != null) uriBuilder.queryParam("passport", passport);
         model.addAttribute("filterUrl", uriBuilder.build().toString());
 
-//        List<Client> topOrganizations = clientService.getTopOrganizations();
-//        model.addAttribute("topOrganizations", topOrganizations);
+        List<Client> topClients = clientService.getTopClients();
+        model.addAttribute("topClients", topClients);
 
         return "client/index";
     }
-
-//    @GetMapping("/filter")
-//    public String filter(@RequestParam(value = "lastName", required = false) String lastName,
-//                         @RequestParam(value = "birthDate", required = false) String birthDate,
-//                         @RequestParam(value = "passport", required = false) String passport,
-//                         Model model) {
-//        Client client = new Client();
-//        model.addAttribute("clients", clientService.filter(lastName, birthDate, passport));
-//        model.addAttribute("client", client);
-//        model.addAttribute("lastName", lastName);
-//        model.addAttribute("birthDate", birthDate);
-//        model.addAttribute("passport", passport);
-//        return "client/index";
-//    }
 
     @GetMapping("/new")
     public String newClient(@ModelAttribute("client") Client client) {
@@ -119,33 +103,34 @@ public class ClientController {
         return "redirect:/clients";
     }
 
-    @GetMapping("/{id}/edit")
-    public String edit(Model model, @PathVariable("id") Long id) {
-        model.addAttribute("client", clientService.getClientById(id));
+    @ClientAccess
+    @GetMapping("/{clientId}/edit")
+    public String edit(Model model, @PathVariable("clientId") Long clientId) {
+        model.addAttribute("client", clientService.getClientById(clientId));
         mode = 1;
-        tempId = id;
+        tempId = clientId;
         return "client/change";
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{clientId}")
     public String update(@ModelAttribute("client") @Valid Client client, BindingResult bindingResult,
-                         @PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+                         @PathVariable("clientId") Long clientId, RedirectAttributes redirectAttributes) {
         clientValidator.validate(client, bindingResult);
-        redirectAttributes.addAttribute("id", id);
+        redirectAttributes.addAttribute("id", clientId);
 
         if (bindingResult.hasErrors()) {
             return "client/change";
         }
 
-        clientService.update(id, client);
+        clientService.update(clientId, client);
         mode = 0;
         tempId = null;
         return "redirect:/clients/{id}";
     }
 
-    @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") Long id) {
-        clientService.delete(id);
+    @DeleteMapping("/{clientId}")
+    public String delete(@PathVariable("clientId") Long clientId) {
+        clientService.delete(clientId);
         return "redirect:/clients";
     }
 }

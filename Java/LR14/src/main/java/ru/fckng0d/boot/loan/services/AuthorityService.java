@@ -22,4 +22,8 @@ public class AuthorityService {
     public String getRoleByUser(User user) {
         return getAuthorityByUser(user).getRole();
     }
+
+    public void save(Authority authority) {
+        authorityRepository.save(authority);
+    }
 }

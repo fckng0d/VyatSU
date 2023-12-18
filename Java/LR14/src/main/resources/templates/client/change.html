@@ -33,6 +33,13 @@
             right: 140px;
             bottom: 18px;
         }
+
+        .fixed-top-nav {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
@@ -69,7 +76,7 @@
 </nav>
 
 <form th:if="${client.clientId == null}" th:method="POST" th:action="@{/clients}" th:object="${client}"
-      class="form-horizontal" onsubmit="return validateForm();">
+      class="form-horizontal" onsubmit="return validateForm()"  style="margin-top: 80px">
     <h3 style="margin-left: 123px; margin-top: 20px; margin-bottom: 25px">Добавить клиента</h3>
 
     <div style="margin-bottom: 25px" class="input-group">
@@ -293,7 +300,7 @@
             return false;
         }
 
-        var passportRegex = /^\d{10}$/; // Паспорт должен состоять из 10 цифр
+        var passportRegex = /^\d{10}$/;
         if (!passportRegex.test(passportInput)) {
             errorField.textContent = "Паспорт должен состоять из 10 цифр";
             return false;

@@ -12,6 +12,7 @@ import lombok.Setter;
 @Table(name = "authorities")
 public class Authority {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "auth_id")
     private Long id;
 

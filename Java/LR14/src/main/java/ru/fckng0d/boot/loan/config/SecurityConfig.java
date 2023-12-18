@@ -9,20 +9,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.jdbc.core.JdbcTemplate;
-import ru.fckng0d.boot.loan.entities.User;
+import ru.fckng0d.boot.loan.services.ClientService;
 import ru.fckng0d.boot.loan.services.UserService;
 
 import javax.sql.DataSource;
@@ -31,20 +30,22 @@ import java.util.Collection;
 
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfiguration {
     private final UserService userService;
+    private final ClientService clientService;
     private final DataSource dataSource;
 
     @Autowired
-    public SecurityConfig(UserService userService, DataSource dataSource) {
+    public SecurityConfig(UserService userService, ClientService clientService, DataSource dataSource) {
         this.userService = userService;
+        this.clientService = clientService;
         this.dataSource = dataSource;
     }
 
+    @SuppressWarnings("removal")
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        CookieClearingLogoutHandler cookies = new CookieClearingLogoutHandler("our-custom-cookie");
         http.authorizeHttpRequests( authorize -> authorize
                         .requestMatchers("/clients").hasAnyRole("ADMIN")
                         .requestMatchers("/clients/{id:\\d+}").hasAnyRole("ADMIN", "USER")
@@ -67,8 +68,21 @@ public class SecurityConfig extends WebSecurityConfiguration {
                         .logoutSuccessUrl("/logout")
                         .deleteCookies("JSESSIONID")
                         .clearAuthentication(true)
-                        .permitAll());
+                        .permitAll())
+                .exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler());
         return http.build();
+    }
+
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
+    }
+
+    public static class CustomAccessDeniedHandler implements AccessDeniedHandler {
+        @Override
+        public void handle(HttpServletRequest request, HttpServletResponse response, org.springframework.security.access.AccessDeniedException accessDeniedException) throws IOException, ServletException {
+            response.sendRedirect(request.getContextPath() + "/access-denied");
+        }
     }
 
     public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -81,6 +95,7 @@ public class SecurityConfig extends WebSecurityConfiguration {
                     return;
                 } else if (authority.getAuthority().equals("ROLE_USER")) {
                     Long clientId = userService.getClientIdByAuthentication(authentication, dataSource);
+                    clientService.incrementLoginCount(clientId);
                     response.sendRedirect("/clients/" + clientId);
                     return;
                 }
@@ -110,26 +125,5 @@ public class SecurityConfig extends WebSecurityConfiguration {
     public JdbcTemplate jdbcTemplate() {
         return new JdbcTemplate(dataSource);
     }
-
-
-//    @Bean
-//    public UserDetailsService userDetailsService(UserService userService) {
-//        return new UserDetailsService() {
-//            @Override
-//            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//                User user = userService.getUserByUserName(username);
-//                if (user == null) {
-//                    System.out.println("User not found");
-//                    throw new UsernameNotFoundException("User not found");
-//                }
-//                userService.encode(username);
-//                return org.springframework.security.core.userdetails.User
-//                        .withUsername(username)
-//                        .password(user.getPassword())
-//                        .roles(userService.getRoleByUsername(username))
-//                        .build();
-//            }
-//        };
-//    }
 }
 

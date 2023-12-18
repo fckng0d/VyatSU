@@ -2,10 +2,11 @@ package ru.fckng0d.boot.loan.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.fckng0d.boot.loan.entities.Client;
 import ru.fckng0d.boot.loan.entities.User;
@@ -20,7 +21,6 @@ import java.util.Objects;
 public class ClientService {
     private final ClientRepository clientRepository;
     private final DataSource dataSource;
-
 
     @Autowired
     public ClientService(ClientRepository clientRepository, DataSource dataSource) {
@@ -39,6 +39,12 @@ public class ClientService {
         return String.valueOf(jdbcTemplate.queryForObject(clientIdQuery, Long.class, username));
     }
 
+    public void incrementLoginCount(Long clientId) {
+        Client client = getClientById(clientId);
+        client.setCountOfLogins(client.getCountOfLogins() + 1);
+        clientRepository.save(client);
+    }
+
     public List<Client> getAllClients() {
         return clientRepository.findAll();
     }
@@ -55,8 +61,11 @@ public class ClientService {
         return clientRepository.findAll(specification, pageable);
     }
 
-    public Client getClientByUser(User user) {
-        return clientRepository.findClientByUser(user);
+    public List<Client> getTopClients() {
+        Pageable topClients = PageRequest.of(0, 3,
+                Sort.by(Sort.Order.desc("countOfLogins")));
+        Page<Client> topClientsPage = clientRepository.findAll(topClients);
+        return topClientsPage.getContent();
     }
 
     public void add(Client client) {
@@ -78,32 +87,6 @@ public class ClientService {
             clientRepository.save(client);
         }
     }
-
-//    public List<Client> filter(String lastName, String birthDate, String passport) {
-//        List<Client> filteredList = getAllClients();
-//
-//        if (lastName != null && !lastName.isBlank()) {
-//            filteredList.removeIf(c -> !c.getLastName().toLowerCase().contains(lastName.toLowerCase()));
-//        }
-//        if (birthDate != null && !birthDate.isBlank()) {
-//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-//
-//            try {
-//                formatter.parse(birthDate);
-//                for (Client c : filteredList) {
-//                    if (!c.getBirthDate().equals(birthDate)) {
-//                        filteredList.remove(c);
-//                    }
-//                }
-//            } catch (ParseException ignored) {
-//            }
-//        }
-//        if (passport != null && !passport.isBlank()) {
-//            filteredList.removeIf(c -> !c.getPassport().contains(passport));
-//        }
-//
-//        return filteredList;
-//    }
 
     public Client isThereSuchPassport(Client client, Long id, int mode) {
         if (mode == 0) {

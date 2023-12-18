@@ -33,11 +33,18 @@
             right: 140px;
             bottom: 18px;
         }
+
+        .fixed-top-nav {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top-nav">
     <a class="navbar-brand" href="/hello">Кредитка</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +77,7 @@
     </div>
 </nav>
 
-<form th:if="${loan.loanId == null}" th:method="POST"
+<form th:if="${loan.loanId == null}" th:method="POST" style="margin-top: 120px"
       th:action="@{/clients/__${clientId}__/loans}" th:object="${loan}" class="form-horizontal">
     <h3 style="margin-left: 123px; margin-top: 20px; margin-bottom: 25px">Добавить кредит</h3>
 
@@ -103,12 +110,6 @@
         <div style="color:red; min-width: 100%;" id="dateOfGiveError"></div>
     </div>
 
-    <!--  <div style="margin-bottom: 25px" class="input-group">-->
-    <!--    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>-->
-    <!--    <input th:field="*{dateOfTotalRepayment}" id="dateOfTotalRepaymentInput" placeholder="Дата полного погашения" class="form-control"/>-->
-    <!--    <div style="color:red; min-width: 100%;" id="dateOfTotalRepaymentError"></div>
-    </div>-->
-
     <div style="margin-top: 10px" class="form-group justify-content-center">
         <div class="col-sm-12 controls">
             <button style='margin-left: 183px' type="submit" class="btn btn-primary"
@@ -119,7 +120,7 @@
 </form>
 
 
-<form th:if="${loan.loanId != null}" th:method="PATCH"
+<form th:if="${loan.loanId != null}" th:method="PATCH" style="margin-top: 110px"
       th:action="@{'/clients/' + ${clientId} + '/loans/' + ${loan.getLoanId()}}"
       th:object="${loan}" class="form-horizontal">
     <h3 style="margin-left: 70px; margin-top: 20px; margin-bottom: 25px">Изменить данные кредита</h3>
@@ -194,7 +195,7 @@
         }
 
         if (amount < 1000.00 || amount > 10000000.00) {
-            errorField.textContent = "Сумма должна быть в пределах от 1000 до 1000000";
+            errorField.textContent = "Сумма должна быть в пределах от 1000 до 10000000";
             return false;
         }
 
@@ -212,7 +213,7 @@
         }
 
         if (isNaN(interestRate)) {
-            errorField.textContent = "Процент должна быть числом";
+            errorField.textContent = "Процент должен быть числом";
             return false;
         }
 
@@ -272,6 +273,7 @@
                     errorField.textContent = "";
                 }
             }
+            errorField.textContent = "";
             return true;
         }
     }
@@ -300,7 +302,7 @@
         }
 
         if (amount < 1000.00 || amount > 10000000.00) {
-            errorField.textContent = "Сумма должна быть в пределах от 1000 до 1000000";
+            errorField.textContent = "Сумма должна быть в пределах от 1000 до 10000000";
             return false;
         }
 
@@ -318,7 +320,7 @@
         }
 
         if (isNaN(interestRate)) {
-            errorField.textContent = "Процент должна быть числом";
+            errorField.textContent = "Процент должен быть числом";
             return false;
         }
 
@@ -378,6 +380,7 @@
                     errorField.textContent = "";
                 }
             }
+            errorField.textContent = "";
             return true;
         }
     }
@@ -417,6 +420,7 @@
                     }
                 }
             }
+            errorField.textContent = "";
             return true;
         }
     }
