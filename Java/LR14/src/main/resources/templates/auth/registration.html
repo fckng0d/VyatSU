@@ -64,35 +64,35 @@
     <div style="margin-bottom: 25px" class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
         <input th:field="*{lastName}" id="lastNameInput" placeholder="Фамилия"
-               class="form-control" onkeyup="validateLastName1()"/>
+               class="form-control" onkeyup="validateLastName()"/>
         <div style="color:red; min-width: 100%;" id="lastNameError"></div>
     </div>
 
     <div style="margin-top: 25px; margin-bottom: 25px" class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
         <input th:field="*{firstName}" id="firstNameInput" placeholder="Имя"
-               class="form-control" onkeyup="validateFirstName1()"/>
+               class="form-control" onkeyup="validateFirstName()"/>
         <div style="color:red; min-width: 100%;" id="firstNameError"></div>
     </div>
 
     <div style="margin-bottom: 25px" class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
         <input th:field="*{patronymic}" id="patronymicInput" placeholder="Отчество (при наличии)"
-               class="form-control" onkeyup="validatePatronymic1()"/>
+               class="form-control" onkeyup="validatePatronymic()"/>
         <div style="color:red; min-width: 100%;" id="patronymicError"></div>
     </div>
 
     <div style="margin-bottom: 25px" class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
         <input th:field="*{birthDate}" id="birthDateInput" placeholder="Дата рождения"
-               class="form-control" onkeyup="validateBirthDate1()"/>
+               class="form-control" onkeyup="validateBirthDate()"/>
         <div style="color:red; min-width: 100%;" id="birthDateError"></div>
     </div>
 
     <div style="margin-bottom: 25px" class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
         <input th:field="*{passport}" id="passportInput" placeholder="Паспорт"
-               class="form-control" onkeyup="validatePassport1()"/>
+               class="form-control" onkeyup="validatePassport()"/>
         <div style="color:red; min-width: 100%;" id="passportError"></div>
         <div style="color:red" th:if="${#fields.hasErrors('passport')}" th:errors="*{passport}"></div>
     </div>
@@ -100,7 +100,7 @@
     <div style="margin-bottom: 25px" class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
         <input id="username" name="username" placeholder="Юзернейм"
-               class="form-control" onkeyup="validatePassport1()"/>
+               class="form-control"/>
         <div style="color:red; min-width: 100%;" id="usernameError"></div>
         <div style="color:red" ></div>
     </div>
@@ -108,7 +108,7 @@
     <div style="margin-bottom: 25px; margin-top: 30px" class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
         <input id="password" name="password" placeholder="Пароль"
-               class="form-control" onkeyup="validatePassport1()"/>
+               class="form-control"/>
         <div style="color:red; min-width: 100%;" id="passwordError"></div>
         <div style="color:red"  ></div>
     </div>

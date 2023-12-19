@@ -84,7 +84,7 @@
     <h4>Топ-3 самых больших кредитов</h4>
     <ul th:if="${topLoans != null}" style="list-style-type: none; padding: 0; margin: 0;">
         <li th:each="loan : ${topLoans}">
-            <a th:href="@{'/clients/' + ${clientId} + '/' ${loan.getLoanId()}}"
+            <a th:href="'/clients/' + ${clientId} + '/loans/' +  ${loan.getLoanId()}"
                th:text="'Кредит (id: ' + ${loan.getLoanId()} + ')'"></a>
             <span th:text="' - ' + ${loan.getLoanAmount()}"></span>
         </li>
@@ -179,8 +179,8 @@
                 <hr>
                 <div class="form-group" style="margin-top: 10px">
                     <div class="col-sm-6 controls">
-                        <button style='margin-left: 123px' type="submit" class="btn btn-primary" onclick="return
-                    validateForm()">Отфильтровать
+                        <button style='margin-left: 123px' type="submit" class="btn btn-primary"
+                                onclick="return validateForm()">Отфильтровать
                         </button>
                     </div>
                 </div>

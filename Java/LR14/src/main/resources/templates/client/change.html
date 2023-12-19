@@ -75,7 +75,7 @@
     </div>
 </nav>
 
-<form th:if="${client.clientId == null}" th:method="POST" th:action="@{/clients}" th:object="${client}"
+<form th:if="${client.clientId == null}" th:method="POST" th:action="@{/clients/new}" th:object="${client}"
       class="form-horizontal" onsubmit="return validateForm()"  style="margin-top: 80px">
     <h3 style="margin-left: 123px; margin-top: 20px; margin-bottom: 25px">Добавить клиента</h3>
 

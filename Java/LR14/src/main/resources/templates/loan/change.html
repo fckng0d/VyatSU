@@ -78,7 +78,7 @@
 </nav>
 
 <form th:if="${loan.loanId == null}" th:method="POST" style="margin-top: 120px"
-      th:action="@{/clients/__${clientId}__/loans}" th:object="${loan}" class="form-horizontal">
+      th:action="@{'/clients/' + ${clientId} + '/loans'}" th:object="${loan}" class="form-horizontal">
     <h3 style="margin-left: 123px; margin-top: 20px; margin-bottom: 25px">Добавить кредит</h3>
 
     <div style="margin-bottom: 25px" class="input-group">

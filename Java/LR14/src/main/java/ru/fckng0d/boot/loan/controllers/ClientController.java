@@ -81,7 +81,7 @@ public class ClientController {
         if (passport != null) uriBuilder.queryParam("passport", passport);
         model.addAttribute("filterUrl", uriBuilder.build().toString());
 
-        List<Client> topClients = clientService.getTopClients();
+        List<Client> topClients = clientService.getAllClients();
         model.addAttribute("topClients", topClients);
 
         return "client/index";
@@ -99,6 +99,7 @@ public class ClientController {
         if (bindingResult.hasErrors()) {
             return "client/change";
         }
+        client.setCountOfLogins(0);
         clientService.add(client);
         return "redirect:/clients";
     }

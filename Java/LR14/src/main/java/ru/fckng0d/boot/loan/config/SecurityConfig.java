@@ -96,7 +96,7 @@ public class SecurityConfig extends WebSecurityConfiguration {
                 } else if (authority.getAuthority().equals("ROLE_USER")) {
                     Long clientId = userService.getClientIdByAuthentication(authentication, dataSource);
                     clientService.incrementLoginCount(clientId);
-                    response.sendRedirect("/clients/" + clientId);
+                    response.sendRedirect("/clients/" + clientId + "/loans");
                     return;
                 }
             }

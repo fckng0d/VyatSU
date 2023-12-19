@@ -63,10 +63,10 @@ public class LoanController {
 
     @ClientAccess
     @PostMapping("/clients/{clientId}/loans")
-    public String saveLoan(@PathVariable("clientId") Long id, @ModelAttribute("loan") Loan loan) {
-        loan.setClient(clientService.getClientById(id));
+    public String saveLoan(@PathVariable("clientId") Long clientId, @ModelAttribute("loan") Loan loan) {
+        loan.setClient(clientService.getClientById(clientId));
         loanService.add(loan);
-        return "redirect:/clients/{id}/loans";
+        return "redirect:/clients/{clientId}/loans";
     }
 
     @ClientAccess

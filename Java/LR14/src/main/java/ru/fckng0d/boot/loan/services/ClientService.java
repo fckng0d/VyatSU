@@ -1,31 +1,33 @@
 package ru.fckng0d.boot.loan.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import ru.fckng0d.boot.loan.entities.Client;
-import ru.fckng0d.boot.loan.entities.User;
+import ru.fckng0d.boot.loan.repositories.AuthorityRepository;
 import ru.fckng0d.boot.loan.repositories.ClientRepository;
+import ru.fckng0d.boot.loan.repositories.UserRepository;
 import ru.fckng0d.boot.loan.specifications.ClientSpecification;
 
 import javax.sql.DataSource;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ClientService {
     private final ClientRepository clientRepository;
     private final DataSource dataSource;
+    private final UserRepository userRepository;
+    private final AuthorityRepository authorityRepository;
 
     @Autowired
-    public ClientService(ClientRepository clientRepository, DataSource dataSource) {
+    public ClientService(ClientRepository clientRepository, DataSource dataSource, UserRepository userRepository, AuthorityRepository authorityRepository) {
         this.clientRepository = clientRepository;
         this.dataSource = dataSource;
+        this.userRepository = userRepository;
+        this.authorityRepository = authorityRepository;
     }
 
     public Client getClientById(Long id) {
@@ -62,10 +64,16 @@ public class ClientService {
     }
 
     public List<Client> getTopClients() {
-        Pageable topClients = PageRequest.of(0, 3,
-                Sort.by(Sort.Order.desc("countOfLogins")));
-        Page<Client> topClientsPage = clientRepository.findAll(topClients);
-        return topClientsPage.getContent();
+        List<Client> list = clientRepository.findAll();
+
+        list = list.stream()
+                .filter(c -> c.getLoanList() != null)
+                .sorted(Comparator.comparing(client -> client.getLoanList() != null ?
+                        client.getLoanList().size() : 0, Comparator.reverseOrder()))
+                .limit(3)
+                .collect(Collectors.toList());
+
+        return list;
     }
 
     public void add(Client client) {
@@ -73,6 +81,7 @@ public class ClientService {
     }
 
     public void delete(Long id) {
+//        userRepository.delete(getClientById(id).getUser());
         clientRepository.delete(getClientById(id));
     }
 

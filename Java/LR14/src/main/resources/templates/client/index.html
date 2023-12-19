@@ -61,11 +61,12 @@
 </nav>
 
 <div class="centered" style="margin-top: 80px">
-    <h4>Топ-3 по входам в аккаунт</h4>
+    <h4>Топ-3 по количеству кредитов</h4>
     <ul th:if="${topClients != null}" style="list-style-type: none; padding: 0; margin: 0;">
         <li th:each="client : ${topClients}">
-            <a th:href="@{'/clients/' + ${client.getClientId()}}" th:text="${client.getFirstName()}"></a>
-            <span th:text="' - ' + ${client.getCountOfLogins()} + ' вход(а/ов) в аккаунт'"></span>
+            <a th:href="@{'/clients/' + ${client.getClientId()}}"
+               th:text="${client.getFirstName()} + ' ' + ${client.getLastName()}"></a>
+            <span th:text="' - ' + ${client.getLoanList().size()} + ' кредитов'"></span>
         </li>
     </ul>
 </div>

@@ -24,7 +24,7 @@ public class ClientSpecification {
             if (birthDate == null || birthDate.isBlank()) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("birthDate"), birthDate);
+            return criteriaBuilder.like(root.get("birthDate"), "%" + birthDate + "%");
         });
     }
 
