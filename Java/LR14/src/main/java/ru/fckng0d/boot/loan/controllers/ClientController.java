@@ -81,7 +81,7 @@ public class ClientController {
         if (passport != null) uriBuilder.queryParam("passport", passport);
         model.addAttribute("filterUrl", uriBuilder.build().toString());
 
-        List<Client> topClients = clientService.getAllClients();
+        List<Client> topClients = clientService.getTopClients();
         model.addAttribute("topClients", topClients);
 
         return "client/index";

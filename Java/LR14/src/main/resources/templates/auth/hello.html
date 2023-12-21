@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:ces="http://www.w3.org/1999/xhtml">
-<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
     <title>Добро пожаловать</title>
@@ -102,10 +101,12 @@
                    th:href="'/clients/' + ${@clientService.getClientIdByUsername(#authentication.getName())}"
                    th:text="${@userService.getRealNameByUsername(#authentication.getName())}"></a>
             </li>
-            <li ces:authorize="isAnonymous()" class="nav-item">
+            <li th:if="${#authorization.expression('isAnonymous()')}" class="nav-item">
                 <form action="/registration" method="get" class="logout-form">
                     <button type="submit" class="btn">Sign Up</button>
                 </form>
+            </li>
+            <li class="nav-item">
                 <form th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
                       action="/logout" method="get" class="logout-form">
                     <button type="submit" class="btn btn-danger">Logout</button>
